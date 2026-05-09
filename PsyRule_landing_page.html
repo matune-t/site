@@ -1,0 +1,2384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PsyRule — For traders who know it's behavioral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,700..800,50;1,9..144,700..800,50&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<template id="__bundler_thumbnail" data-bg-color="#f5f3ee">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#f5f3ee"/>
+    <g transform="translate(540,260)">
+      <!-- Loop mark in green rounded square -->
+      <rect x="-30" y="-30" width="180" height="180" rx="40" fill="#1a5c3e"/>
+      <g transform="translate(60,60) scale(7.5) translate(-8,-8)">
+        <path d="M 12.33 5.5 A 5 5 0 1 0 12.33 10.5" stroke="#f5f3ee" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+        <path d="M 13.2 5 L 10.6 11" stroke="#f5f3ee" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+      </g>
+    </g>
+    <text x="600" y="640" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-style="italic" font-weight="800" font-size="56" fill="#0e0d0b">PsyRule</text>
+  </svg>
+</template>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cream:  #f5f3ee;
+  --cream2: #ede9e2;
+  --cream3: #e4dfd6;
+  --white:  #faf9f6;
+  --border: #d8d4cc;
+  --border2:#c4c0b8;
+  --ink:    #0e0d0b;
+  --ink2:   #5c5a54;
+  --ink3:   #9e9b94;
+  --green:  #1a5c3e;
+  --green2: #206e4a;
+  --gl:     #edf5f0;
+  --gm:     rgba(26,92,62,.12);
+  --amber:  #7c4a00;
+  --ambl:   #fff8ed;
+  --red:    #8b1a1a;
+  --redl:   #fff0f0;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--cream); color: var(--ink); font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.65; overflow-x: hidden; }
+
+/* NAV */
+nav {
+  position: fixed; inset: 0 0 auto; z-index: 200;
+  padding: 16px 56px 0; height: 88px;
+  display: flex; align-items: flex-start; justify-content: center;
+  pointer-events: none;
+}
+.nav-shell {
+  width: min(1160px, 100%); height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 8px 8px 14px;
+  background: rgba(250,249,246,.78);
+  border: 1px solid rgba(216,212,204,.82);
+  border-radius: 18px;
+  box-shadow: 0 18px 48px rgba(14,13,11,.08), inset 0 1px 0 rgba(255,255,255,.72);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  pointer-events: auto;
+}
+.logo { display: flex; align-items: center; gap: 11px; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 18px; color: var(--ink); text-decoration: none; letter-spacing: -.03em; }
+.logo-mark { width: 34px; height: 34px; background: linear-gradient(145deg, var(--green), #0f402b); border-radius: 11px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 22px rgba(26,92,62,.24), inset 0 1px 0 rgba(255,255,255,.22); }
+.logo-mark svg { width: 18px; height: 18px; }
+.logo-word { display: inline; }
+.nav-badge { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--green); background: var(--gl); border: 1px solid rgba(26,92,62,.16); border-radius: 999px; padding: 3px 7px; transform: translateY(1px); }
+.nav-r { display: flex; align-items: center; gap: 6px; }
+.nav-link { font-size: 14px; color: var(--ink2); text-decoration: none; transition: color .15s, background .15s; padding: 10px 13px; border-radius: 999px; line-height: 1; }
+.nav-link:hover { color: var(--ink); background: rgba(14,13,11,.045); }
+.nav-btn { background: var(--green); color: #fff; border: 1px solid rgba(14,13,11,.08); font-family: 'Manrope', sans-serif; font-weight: 650; font-size: 14px; padding: 12px 20px; border-radius: 13px; cursor: pointer; text-decoration: none; transition: transform .15s, background .15s, box-shadow .15s; margin-left: 8px; line-height: 1; box-shadow: 0 10px 22px rgba(26,92,62,.20); }
+.nav-btn:hover { background: var(--green2); transform: translateY(-1px); box-shadow: 0 14px 28px rgba(26,92,62,.24); }
+
+/* HERO */
+.hero { padding: 118px 56px 68px; max-width: 1200px; margin: 0 auto; text-align: center; position: relative; }
+.hero::before {
+  content: ''; position: absolute; inset: 84px 24px auto; height: 360px; z-index: -1;
+  background:
+    radial-gradient(circle at 28% 22%, rgba(26,92,62,.18), transparent 34%),
+    radial-gradient(circle at 72% 8%, rgba(124,74,0,.10), transparent 30%),
+    linear-gradient(180deg, rgba(250,249,246,.72), rgba(245,243,238,0));
+  filter: blur(.2px); border-radius: 40px;
+}
+.hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--green); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 22px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.hero-eyebrow::before, .hero-eyebrow::after { content:''; width: 24px; height: 1px; background: var(--green); display: block; }
+.hero-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 0 rgba(26,92,62,.36); animation: heroPulse 1.8s ease-out infinite; }
+.hero-live-strip {
+  display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center;
+  background: rgba(250,249,246,.72); border: 1px solid var(--border); border-radius: 999px;
+  padding: 8px 12px; margin-bottom: 20px; box-shadow: 0 12px 32px rgba(14,13,11,.05);
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink2);
+}
+.hero-chip { background: var(--gl); border: 1px solid rgba(26,92,62,.18); color: var(--green); padding: 4px 9px; border-radius: 999px; }
+h1 { font-family: 'Fraunces', serif; font-weight: 800; font-size: clamp(44px, 6vw, 82px); line-height: .95; letter-spacing: -.02em; color: var(--ink); margin-bottom: 24px; }
+h1 em { font-style: italic; color: var(--green); }
+.hero-action { position: relative; display: inline-block; white-space: nowrap; }
+.hero-action::after {
+  content: ''; position: absolute; left: 4%; right: 0; bottom: .04em; height: .18em; z-index: -1;
+  background: linear-gradient(90deg, rgba(26,92,62,.16), rgba(26,92,62,.34)); border-radius: 999px;
+  transform-origin: left; animation: underlineSweep 3.4s ease-in-out infinite;
+}
+.hero-name { font-family: 'Fraunces', serif; font-style: italic; font-weight: 800; color: var(--ink); }
+.hero-body { font-size: 18px; color: var(--ink2); font-weight: 300; line-height: 1.7; margin-bottom: 26px; max-width: 650px; margin-left: auto; margin-right: auto; }
+.hero-risk-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; max-width: 810px; margin: 0 auto 34px; }
+.hero-risk-card {
+  background: rgba(250,249,246,.82); border: 1px solid var(--border); border-radius: 12px;
+  padding: 15px 16px; text-align: left; box-shadow: 0 14px 36px rgba(14,13,11,.045);
+  animation: cardFloat 5.5s ease-in-out infinite;
+}
+.hero-risk-card:nth-child(2) { animation-delay: .6s; }
+.hero-risk-card:nth-child(3) { animation-delay: 1.2s; }
+.hrc-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+.hrc-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink3); }
+.hrc-badge { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 3px 7px; border-radius: 999px; background: var(--ambl); color: var(--amber); border: 1px solid rgba(124,74,0,.16); }
+.hrc-badge.red { background: var(--redl); color: var(--red); border-color: rgba(139,26,26,.15); }
+.hrc-badge.green { background: var(--gl); color: var(--green); border-color: rgba(26,92,62,.16); }
+.hrc-main { font-size: 14px; color: var(--ink); font-weight: 600; line-height: 1.25; margin-bottom: 8px; }
+.hrc-sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink2); line-height: 1.45; }
+.hero-cta { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
+.btn-p { background: var(--green); color: #fff; border: none; font-family: 'Manrope', sans-serif; font-weight: 500; font-size: 15px; padding: 13px 28px; border-radius: 7px; cursor: pointer; transition: background .15s; text-decoration: none;: background .15s; }
+.btn-p:hover { background: var(--green2); }
+.btn-g { background: transparent; color: var(--ink2); border: 1px solid var(--border2); font-family: 'Manrope', sans-serif; font-weight: 400; font-size: 15px; padding: 13px 24px; border-radius: 7px; cursor: pointer; transition: color .15s, border-color .15s; text-decoration: none; }
+.btn-g:hover { color: var(--ink); border-color: var(--ink); }
+.hero-note { font-size: 12px; color: var(--ink3); font-family: 'JetBrains Mono', monospace; }
+.hero-note strong { color: var(--green); }
+
+/* Hero founding counter — urgency without screaming */
+.hero-founding {
+  display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;
+  margin-top: 18px; padding: 9px 16px;
+  background: rgba(250,249,246,.78); border: 1px solid var(--border); border-radius: 999px;
+  box-shadow: 0 12px 32px rgba(14,13,11,.05);
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink2); letter-spacing: .04em;
+}
+.hf-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 0 rgba(26,92,62,.36); animation: heroPulse 1.8s ease-out infinite; }
+.hero-founding strong { color: var(--green); font-weight: 600; }
+.hf-sep { color: var(--ink3); }
+.hf-text-soft { color: var(--ink3); }
+.hero-founding.sold-out strong { color: var(--amber); }
+
+
+.hero-minimal { padding-bottom: 52px; }
+.hero-minimal h1 { margin-bottom: 28px; }
+.hero-signal {
+  position: relative; display: flex; align-items: center; justify-content: center; gap: 18px;
+  max-width: 620px; margin: 0 auto 32px; min-height: 132px;
+}
+.hero-signal::before {
+  content: ''; position: absolute; left: 74px; right: 74px; top: 50%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(26,92,62,.28), transparent);
+}
+.signal-card {
+  position: relative; z-index: 2; min-width: 132px; padding: 14px 16px;
+  background: rgba(250,249,246,.84); border: 1px solid var(--border); border-radius: 14px;
+  box-shadow: 0 18px 44px rgba(14,13,11,.055);
+}
+.signal-card span, .signal-label {
+  display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink3);
+}
+.signal-card strong { display: block; margin-top: 3px; font-size: 15px; line-height: 1.2; color: var(--ink); transition: opacity .26s ease, transform .26s ease; }
+.signal-card strong.is-changing { opacity: 0; transform: translateY(5px); }
+.signal-card-left { animation: softFloat 5s ease-in-out infinite; }
+.signal-card-right { animation: softFloat 5s ease-in-out infinite 1s; }
+.signal-core {
+  position: relative; z-index: 3; width: 154px; height: 154px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  background: radial-gradient(circle, rgba(237,245,240,.95), rgba(250,249,246,.78) 62%, rgba(250,249,246,0) 70%);
+}
+.signal-ring {
+  position: absolute; inset: 17px; border-radius: 50%; border: 1px solid rgba(26,92,62,.24);
+  animation: signalRing 2.8s ease-out infinite;
+}
+.signal-dot {
+  width: 42px; height: 42px; border-radius: 50%; background: var(--green);
+  box-shadow: 0 0 0 10px rgba(26,92,62,.09), 0 18px 38px rgba(26,92,62,.2);
+  margin-bottom: 12px; animation: signalDotScan 2.8s ease-in-out infinite;
+}
+.signal-label { color: var(--green); transition: opacity .22s ease, letter-spacing .22s ease; }
+.signal-label.is-monitoring { opacity: .62; letter-spacing: .14em; }
+.signal-label.is-detected { opacity: 1; letter-spacing: .1em; }
+@keyframes softFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes signalRing { 0% { transform: scale(.82); opacity: .8; } 100% { transform: scale(1.22); opacity: 0; } }
+@keyframes signalDotScan { 0%,100% { transform: scale(1); box-shadow: 0 0 0 10px rgba(26,92,62,.09), 0 18px 38px rgba(26,92,62,.2); } 42% { transform: scale(.88); box-shadow: 0 0 0 18px rgba(26,92,62,.07), 0 18px 38px rgba(26,92,62,.18); } 70% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(26,92,62,.12), 0 18px 38px rgba(26,92,62,.22); } }
+@media (max-width: 760px) {
+  .hero-signal { gap: 8px; min-height: 112px; margin-bottom: 28px; }
+  .signal-card { min-width: 106px; padding: 11px 12px; }
+  .signal-card strong { font-size: 13px; }
+  .signal-core { width: 118px; height: 118px; }
+  .signal-dot { width: 32px; height: 32px; margin-bottom: 9px; }
+  .signal-label { font-size: 9px; }
+}
+
+/* VIDEO HERO */
+.video-wrap { max-width: 1100px; margin: 56px auto 0; padding: 0 56px; }
+.video-frame {
+  background: #0c0c0a; border-radius: 16px; overflow: hidden;
+  border: 1px solid #2a2826;
+  box-shadow: 0 48px 120px rgba(14,13,11,.22), 0 8px 32px rgba(14,13,11,.12), 0 0 0 1px rgba(255,255,255,.03);
+  position: relative;
+}
+.video-titlebar { background: #181715; border-bottom: 1px solid #2a2826; padding: 13px 20px; display: flex; align-items: center; gap: 14px; }
+.vdots { display: flex; gap: 7px; }
+.vdots span { width: 11px; height: 11px; border-radius: 50%; }
+.vdots span:nth-child(1) { background: #3d3d3b; }
+.vdots span:nth-child(2) { background: #3d3d3b; }
+.vdots span:nth-child(3) { background: #3d3d3b; }
+.vtabs { display: flex; gap: 2px; margin-left: 8px; }
+.vtab { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 5px 16px; border-radius: 5px; color: #4a4844; letter-spacing: .04em; cursor: default; }
+.vtab.active { background: #252320; color: #c8c4bc; }
+.video-body {
+  position: relative; aspect-ratio: 16/9; overflow: hidden;
+  background: linear-gradient(135deg, #0c1a10 0%, #081210 40%, #0a0e0c 100%);
+  cursor: pointer;
+}
+/* Subtle animated grid in video bg */
+.video-body::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(26,92,62,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(26,92,62,.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+/* Glow */
+.video-body::after {
+  content: '';
+  position: absolute; top: 10%; left: 30%; width: 40%; height: 50%;
+  background: radial-gradient(ellipse at center, rgba(26,92,62,.18) 0%, transparent 65%);
+  pointer-events: none;
+}
+.video-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; z-index: 2; }
+.play-btn {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: rgba(26,92,62,.9); border: 2px solid rgba(76,255,142,.3);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: all .2s; backdrop-filter: blur(8px);
+}
+.play-btn:hover { background: rgba(26,92,62,1); transform: scale(1.08); border-color: rgba(76,255,142,.6); }
+.play-btn svg { width: 28px; height: 28px; fill: #4cff8e; margin-left: 4px; }
+.video-caption { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: rgba(200,200,190,.5); letter-spacing: .08em; text-transform: uppercase; }
+/* Fake UI preview in video bg */
+.video-ui { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: .35; pointer-events: none; }
+.fake-panel {
+  background: rgba(16,26,20,.9); border: 1px solid rgba(26,92,62,.3); border-radius: 12px;
+  padding: 24px; width: 520px; display: flex; flex-direction: column; gap: 14px;
+}
+.fp-row { display: flex; justify-content: space-between; align-items: center; }
+.fp-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #4a6a56; letter-spacing: .08em; text-transform: uppercase; }
+.fp-val { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500; }
+.fp-bar { height: 3px; background: #1e2e24; border-radius: 2px; }
+.fp-fill { height: 3px; border-radius: 2px; }
+.fp-div { height: 1px; background: rgba(26,92,62,.2); }
+.fp-insight { background: rgba(26,92,62,.15); border: 1px solid rgba(26,92,62,.3); border-radius: 7px; padding: 10px; font-size: 11px; color: #6aaa80; font-family: 'JetBrains Mono', monospace; line-height: 1.5; }
+/* actual video element hidden until src set */
+.real-video { display: none; width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+
+/* DIFF BAND */
+.diff-band { background: var(--ink); color: #f0ede7; padding: 80px 56px; }
+.diff-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.diff-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #5c5a54; margin-bottom: 20px; }
+.diff-h { font-family: 'Fraunces', serif; font-weight: 800; font-size: clamp(30px, 3.2vw, 44px); line-height: 1.05; letter-spacing: -.02em; color: #f0ede7; margin-bottom: 20px; }
+.diff-h em { color: #4cff8e; font-style: italic; }
+.diff-p { font-size: 16px; color: #888882; line-height: 1.7; font-weight: 300; }
+.diff-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #2a2826; border: 1px solid #2a2826; border-radius: 12px; overflow: hidden; }
+.diff-col { background: #181715; padding: 28px 24px; }
+.diff-col-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 16px; }
+.tag-r { color: #ff6060; } .tag-g { color: #4cff8e; }
+.diff-col-title { font-size: 15px; font-weight: 600; color: #f0ede7; margin-bottom: 12px; }
+.diff-list { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.diff-list li { font-size: 13px; color: #888882; display: flex; gap: 8px; line-height: 1.4; }
+.di { flex-shrink: 0; margin-top: 2px; }
+
+/* DIFF 3-COL */
+.diff-3col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #2a2826; border: 1px solid #2a2826; border-radius: 12px; overflow: hidden; }
+.diff-3-card { background: #181715; padding: 32px 28px; display: flex; flex-direction: column; gap: 14px; }
+.diff-3-card.on { background: linear-gradient(180deg, #0e1f15 0%, #0a1610 100%); }
+.diff-3-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+.diff-3-title { font-family: 'Fraunces', serif; font-weight: 800; font-style: italic; font-size: 26px; line-height: 1.05; color: #888882; letter-spacing: -.01em; }
+.diff-3-line { height: 1px; background: #2a2826; }
+.diff-3-line.on { background: rgba(76,255,142,.3); }
+.diff-3-body { font-size: 14px; color: #888882; line-height: 1.6; font-weight: 300; }
+
+/* PATTERNS SECTION */
+.patterns-section { padding: 110px 56px; background: var(--cream); border-bottom: 1px solid var(--border); }
+.patterns-inner { max-width: 1200px; margin: 0 auto; }
+.patterns-head { margin-bottom: 56px; max-width: 760px; }
+.pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.pattern-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 32px 30px; display: flex; flex-direction: column; gap: 16px; transition: border-color .2s, box-shadow .2s; }
+.pattern-card:hover { border-color: var(--border2); box-shadow: 0 8px 32px rgba(14,13,11,.06); }
+.pattern-card-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--green); letter-spacing: .12em; }
+.pattern-card-title { font-family: 'Fraunces', serif; font-weight: 800; font-size: 28px; line-height: 1.05; color: var(--ink); letter-spacing: -.01em; }
+.pattern-card-seq { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink2); line-height: 1.4; }
+.pattern-card-seq .pcs-arrow { color: var(--ink3); font-size: 13px; }
+.pattern-card-seq .pcs-end { color: var(--red); }
+.pattern-card-line { height: 1px; background: var(--border); }
+.pattern-card-body { font-size: 14.5px; color: var(--ink2); line-height: 1.65; font-weight: 300; }
+.pattern-card-cost { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; padding: 12px 14px; background: var(--gl); border: 1px solid var(--gm); border-radius: 8px; margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+.pcc-label { font-size: 10px; color: var(--ink3); letter-spacing: .1em; text-transform: uppercase; }
+.pcc-amt { font-family: 'Fraunces', serif; font-style: italic; font-weight: 800; font-size: 22px; color: var(--green); letter-spacing: -.01em; line-height: 1; }
+.pcc-unit { font-size: 11px; color: var(--ink2); }
+
+/* HOW IT WORKS */
+.how-section { padding: 110px 56px; background: var(--white); border-bottom: 1px solid var(--border); }
+.how-inner { max-width: 1200px; margin: 0 auto; }
+.how-head { margin-bottom: 64px; max-width: 760px; }
+.how-flow { position: relative; display: flex; flex-direction: column; gap: 28px; }
+.how-flow-line { position: absolute; left: 31px; top: 24px; bottom: 24px; width: 1px; background: linear-gradient(180deg, var(--green) 0%, var(--green) 70%, transparent 100%); opacity: .3; }
+.how-step { display: grid; grid-template-columns: 64px 1fr; gap: 20px; align-items: start; position: relative; }
+.how-step-num {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--cream); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600;
+  color: var(--green); letter-spacing: .04em; z-index: 2; position: relative;
+  margin-left: 8px;
+}
+.how-step-card { background: var(--cream); border: 1px solid var(--border); border-radius: 12px; padding: 24px 28px; transition: border-color .2s, transform .2s; }
+.how-step:hover .how-step-card { border-color: var(--border2); }
+.how-step-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--green); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 8px; }
+.how-step-title { font-family: 'Fraunces', serif; font-weight: 800; font-size: 26px; line-height: 1.1; letter-spacing: -.01em; color: var(--ink); margin-bottom: 10px; }
+.how-step-title em { color: var(--green); font-style: italic; }
+.how-step-body { font-size: 15px; color: var(--ink2); line-height: 1.65; font-weight: 300; }
+
+.how-loop {
+  margin-top: 48px; padding: 22px 28px;
+  background: var(--cream); border: 1px solid var(--border); border-radius: 100px;
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink2);
+  letter-spacing: .04em;
+}
+.how-loop .hl-arrow { color: var(--ink3); }
+.how-loop .hl-out { color: var(--green); font-weight: 600; }
+
+/* BEHAVIORAL COST SECTION */
+.bcost-section { padding: 110px 56px; background: var(--cream); border-bottom: 1px solid var(--border); }
+.bcost-inner { max-width: 1200px; margin: 0 auto; }
+.bcost-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-top: 32px; }
+.bcost-copy h2 { font-size: clamp(32px, 3.6vw, 48px); }
+
+/* Tilt cost calculator */
+.bcalc .fc-body { gap: 14px; padding: 24px; }
+.bcalc-input { display: flex; flex-direction: column; gap: 6px; }
+.bcalc-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.bcalc-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--ink2); letter-spacing: .07em; text-transform: uppercase; }
+.bcalc-val { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+.bcalc-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--green) 0%, var(--green) var(--p,50%), var(--cream3) var(--p,50%), var(--cream3) 100%); outline: none; cursor: pointer; }
+.bcalc-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--white); border: 2px solid var(--green); cursor: grab; box-shadow: 0 4px 10px rgba(26,92,62,.25); transition: transform .15s; }
+.bcalc-slider::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.12); }
+.bcalc-slider::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--white); border: 2px solid var(--green); cursor: grab; box-shadow: 0 4px 10px rgba(26,92,62,.25); }
+.bcalc-scale { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--ink3); letter-spacing: .06em; margin-top: 1px; }
+.bcalc-output { background: var(--ink); color: #f0ede7; border-radius: 10px; padding: 18px 18px 16px; margin-top: 6px; }
+.bcalc-out-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #888882; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px; }
+.bcalc-out-num { font-family: 'Fraunces', serif; font-weight: 800; font-size: 44px; color: #ff6060; line-height: 1; letter-spacing: -.01em; transition: transform .25s ease; }
+.bcalc-out-num.bump { transform: scale(1.04); }
+.bcalc-out-sub { font-size: 12.5px; color: #c8c4bc; line-height: 1.55; margin-top: 10px; font-weight: 300; }
+.bcalc-out-sub span { font-family: 'Fraunces', serif; font-style: italic; font-weight: 700; color: #4cff8e; font-size: 14px; }
+
+/* Sample weekly report section */
+.report-section { padding: 110px 56px; background: var(--white); border-bottom: 1px solid var(--border); }
+.report-inner { max-width: 1200px; margin: 0 auto; }
+.report-head { margin-bottom: 48px; max-width: 760px; }
+.report-card { background: var(--cream); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 18px 56px rgba(14,13,11,.08), 0 4px 14px rgba(14,13,11,.04); }
+.report-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 22px; background: var(--cream2); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.report-bar-l { display: flex; align-items: center; gap: 10px; }
+.report-bar-l .vdots span { width: 10px; height: 10px; border-radius: 50%; background: var(--border2); }
+.report-bar-l .vdots { display: flex; gap: 6px; }
+.report-bar-name { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink3); letter-spacing: .06em; }
+.report-bar-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink2); }
+.report-bar-meta strong { color: var(--ink); font-weight: 600; }
+.report-body { padding: 38px 44px 44px; display: grid; grid-template-columns: 1fr 1fr; gap: 36px 56px; }
+.report-hero { grid-column: 1 / -1; display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; align-items: end; padding-bottom: 28px; border-bottom: 1px solid var(--border); }
+.report-week { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--green); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; }
+.report-headline { font-family: 'Fraunces', serif; font-weight: 800; font-size: clamp(28px, 3vw, 40px); line-height: 1.05; letter-spacing: -.02em; color: var(--ink); }
+.report-headline em { color: var(--green); font-style: italic; }
+.report-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.report-kpi { padding: 14px 18px; background: var(--white); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.report-kpi:nth-child(2n) { border-right: 0; }
+.report-kpi:nth-last-child(-n+2) { border-bottom: 0; }
+.report-kpi-l { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--ink3); letter-spacing: .1em; text-transform: uppercase; }
+.report-kpi-v { font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--ink); font-weight: 500; margin-top: 4px; }
+.report-kpi-v.green { color: var(--green); }
+.report-kpi-v.red { color: var(--red); }
+
+.report-block-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink3); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.report-block-tag::before { content:''; width: 14px; height: 1px; background: var(--green); display: block; }
+.report-block-h { font-family: 'Fraunces', serif; font-weight: 800; font-size: 22px; line-height: 1.15; color: var(--ink); letter-spacing: -.01em; margin-bottom: 14px; }
+.report-block-h em { color: var(--green); font-style: italic; }
+
+/* Cost-by-pattern breakdown bars */
+.report-pattern-list { display: flex; flex-direction: column; gap: 14px; }
+.report-pattern { display: flex; flex-direction: column; gap: 6px; }
+.report-pat-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink2); }
+.report-pat-row strong { color: var(--ink); font-weight: 500; font-family: 'Manrope', sans-serif; font-size: 13.5px; }
+.report-pat-amt { color: var(--red); font-weight: 600; font-variant-numeric: tabular-nums; }
+.report-pat-bar { height: 6px; background: var(--cream3); border-radius: 3px; overflow: hidden; }
+.report-pat-fill { height: 100%; background: linear-gradient(90deg, #5c1212, #c44040); border-radius: 3px; transition: width 1s cubic-bezier(.2,.8,.2,1); }
+.report-pat-fill.amber { background: linear-gradient(90deg, #7c4a00, #e08020); }
+.report-pat-fill.gray { background: linear-gradient(90deg, #6c6960, #9e9b94); }
+
+/* Hour heatmap */
+.report-heatmap { display: grid; grid-template-columns: 60px repeat(7, 1fr); gap: 3px; }
+.report-hm-h, .report-hm-d { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--ink3); letter-spacing: .04em; text-transform: uppercase; padding: 4px 0; text-align: center; }
+.report-hm-h { text-align: right; padding-right: 8px; }
+.report-hm-cell { aspect-ratio: 1.6/1; border-radius: 3px; background: var(--cream3); position: relative; }
+.report-hm-cell[data-v="0"] { background: #efece5; }
+.report-hm-cell[data-v="1"] { background: #d8e4dc; }
+.report-hm-cell[data-v="2"] { background: #a6c4b4; }
+.report-hm-cell[data-v="3"] { background: #5c8a73; }
+.report-hm-cell[data-v="4"] { background: #1a5c3e; }
+.report-hm-cell[data-v="-1"] { background: #f0d6cc; }
+.report-hm-cell[data-v="-2"] { background: #d88e7e; }
+.report-hm-cell[data-v="-3"] { background: #8b1a1a; }
+.report-hm-legend { display: flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink3); margin-top: 12px; }
+.report-hm-legend-bar { display: flex; gap: 2px; }
+.report-hm-legend-bar span { width: 14px; height: 8px; border-radius: 2px; }
+
+/* Recommended rule */
+.report-rule { background: var(--ink); color: #f0ede7; border-radius: 12px; padding: 24px 26px; grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; }
+.report-rule-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #4cff8e; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 8px; }
+.report-rule-h { font-family: 'Fraunces', serif; font-weight: 800; font-size: 22px; line-height: 1.2; letter-spacing: -.01em; color: #f0ede7; }
+.report-rule-h em { color: #4cff8e; font-style: italic; }
+.report-rule-sub { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #888882; margin-top: 8px; line-height: 1.55; }
+.report-rule-sub strong { color: #c8c4bc; font-weight: 500; }
+.report-rule-actions { display: flex; flex-direction: column; gap: 8px; }
+.report-rule-btn { background: var(--green); color: #fff; border: none; padding: 11px 20px; border-radius: 7px; font-family: 'Manrope', sans-serif; font-weight: 500; font-size: 13.5px; cursor: pointer; white-space: nowrap; transition: background .15s; }
+.report-rule-btn:hover { background: var(--green2); }
+.report-rule-btn.ghost { background: transparent; color: #c8c4bc; border: 1px solid #2a2826; }
+.report-rule-btn.ghost:hover { color: #f0ede7; border-color: #4a4844; }
+
+@media (max-width: 880px) {
+  .report-section { padding: 72px 20px; }
+  .report-body { grid-template-columns: 1fr; padding: 24px; gap: 28px; }
+  .report-hero { grid-template-columns: 1fr; gap: 24px; }
+  .report-rule { grid-template-columns: 1fr; }
+  .report-rule-actions { flex-direction: row; }
+  .report-rule-btn { flex: 1; }
+}
+
+/* STATS */
+.stats { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--white); }
+.stats-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); padding: 0 56px; }
+.stat { padding: 48px 0 48px 40px; border-right: 1px solid var(--border); }
+.stat:first-child { padding-left: 0; }
+.stat:last-child { border-right: none; }
+.stat-n { font-family: 'Fraunces', serif; font-weight: 800; font-size: 52px; color: var(--green); line-height: 1; }
+.stat-l { font-size: 13px; color: var(--ink2); margin-top: 6px; font-weight: 300; }
+
+/* MANIFESTO INSET — narrow break between full-width sections */
+.manifesto { max-width: 760px; margin: 0 auto; padding: 88px 56px; text-align: center; border-bottom: 1px solid var(--border); background: var(--cream); }
+.manifesto-mark { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--green); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 24px; }
+.manifesto-text { font-family: 'Fraunces', serif; font-weight: 700; font-size: clamp(22px, 2.6vw, 32px); line-height: 1.3; letter-spacing: -.01em; color: var(--ink); }
+.manifesto-text em { font-style: italic; color: var(--green); }
+.manifesto-attr { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink3); letter-spacing: .08em; margin-top: 28px; }
+
+/* COMPETITIVE GAP */
+.gap-section { padding: 100px 56px; background: var(--white); border-bottom: 1px solid var(--border); }
+.gap-inner { max-width: 1200px; margin: 0 auto; }
+.section-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--green); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.section-tag::before { content:''; width: 16px; height: 1px; background: var(--green); display: block; }
+.section-tag .ch { font-family: 'Fraunces', serif; font-style: italic; font-weight: 800; font-size: 22px; color: var(--green); letter-spacing: -.01em; text-transform: none; line-height: 1; margin-right: 4px; }
+.section-tag.center { justify-content: center; }
+.section-tag.dark { color: #4cff8e; }
+.section-tag.dark::before { background: #4cff8e; }
+.section-tag.dark .ch { color: #4cff8e; }
+h2 { font-family: 'Fraunces', serif; font-weight: 800; font-size: clamp(30px, 3.5vw, 48px); line-height: 1.02; letter-spacing: -.02em; margin-bottom: 14px; color: var(--ink); }
+h2 em { font-style: italic; color: var(--green); }
+.gap-sub { font-size: 16px; color: var(--ink2); font-weight: 300; margin-bottom: 28px; max-width: 520px; }
+.gap-filters { display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; align-items: center; }
+.gap-filter-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink3); letter-spacing: .1em; text-transform: uppercase; margin-right: 4px; }
+.gap-chip { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 7px 14px; border-radius: 100px; border: 1px solid var(--border2); background: transparent; color: var(--ink2); cursor: pointer; transition: all .15s; letter-spacing: .04em; }
+.gap-chip:hover { color: var(--ink); border-color: var(--ink); }
+.gap-chip.on { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+.gap-chip-count { color: var(--ink3); margin-left: 4px; font-size: 10px; }
+.gap-chip.on .gap-chip-count { color: rgba(245,243,238,.5); }
+.gap-table tbody tr { transition: opacity .25s, background .15s; }
+.gap-table tbody tr.hidden { display: none; }
+.gap-row-why { display: none; }
+.gap-table tbody tr.expanded + tr.gap-row-why { display: table-row; }
+.gap-row-why td { padding: 0; background: var(--cream); border-bottom: 1px solid var(--border); }
+.gap-row-why-inner { padding: 14px 20px 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink2); line-height: 1.6; letter-spacing: .01em; border-left: 2px solid var(--green); }
+.gap-row-why-inner strong { color: var(--ink); font-weight: 500; }
+.gap-table td.feature-col { cursor: pointer; position: relative; padding-right: 24px; }
+.gap-table td.feature-col::after { content: '+'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--ink3); transition: transform .2s; }
+.gap-table tbody tr.expanded td.feature-col::after { transform: translateY(-50%) rotate(45deg); color: var(--green); }
+.gap-table-wrap { overflow-x: auto; }
+.gap-table { width: 100%; border-collapse: collapse; }
+.gap-table thead tr { border-bottom: 2px solid var(--border); }
+.gap-table th { padding: 14px 20px; text-align: center; font-weight: 500; font-size: 13px; color: var(--ink2); font-family: 'Manrope', sans-serif; white-space: nowrap; }
+.gap-table th.our { color: var(--green); font-weight: 600; }
+.gap-competitor-link { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; transition: color .2s, border-color .2s; }
+.gap-competitor-link:hover { color: var(--green); border-bottom-color: var(--green); }
+.gap-table th.feature-col { text-align: left; color: var(--ink3); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+.gap-table th.our-head {
+  background: var(--gl); border-radius: 0; position: relative;
+  border-left: 2px solid var(--green); border-right: 2px solid var(--green);
+  border-top: 2px solid var(--green);
+}
+.gap-table td { padding: 14px 20px; text-align: center; border-bottom: 1px solid var(--border); font-size: 14px; }
+.gap-table td.feature-col { text-align: left; font-size: 14px; color: var(--ink); font-family: 'Manrope', sans-serif; font-weight: 400; padding-left: 0; }
+.gap-table td.our-col { background: var(--gl); border-left: 2px solid var(--green); border-right: 2px solid var(--green); }
+.gap-table tbody tr:last-child td.our-col { border-bottom: 2px solid var(--green); border-radius: 0 0 8px 8px; }
+.gap-table tbody tr:hover { background: var(--cream2); }
+.gap-table tbody tr:hover td.our-col { background: #e2f0e8; }
+.yes { color: var(--green); font-weight: 600; font-size: 16px; }
+.no { color: var(--border2); font-size: 16px; }
+.partial { color: var(--amber); font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+.our-badge {
+  display: inline-block; font-size: 10px; font-family: 'JetBrains Mono', monospace;
+  background: var(--green); color: #fff; padding: 3px 8px; border-radius: 4px;
+  letter-spacing: .06em; text-transform: uppercase; vertical-align: middle; margin-left: 6px;
+}
+.gap-note { font-size: 12px; color: var(--ink3); font-family: 'JetBrains Mono', monospace; margin-top: 20px; }
+
+/* FEATURES */
+.feat-wrap { max-width: 1200px; margin: 0 auto; }
+.feat { padding: 100px 56px; }
+.feat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 96px; align-items: center; }
+.feat-row.rev { direction: rtl; }
+.feat-row.rev > * { direction: ltr; }
+.feat-sep { height: 1px; background: var(--border); margin: 0 56px; }
+.feat-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--green); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.feat-tag::before { content:''; width: 16px; height: 1px; background: var(--green); display: block; }
+.feat-p { font-size: 16px; color: var(--ink2); line-height: 1.7; font-weight: 300; margin-bottom: 28px; }
+.feat-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.feat-list li { font-size: 14px; color: var(--ink2); display: flex; gap: 10px; line-height: 1.5; }
+.fck { color: var(--green); flex-shrink: 0; font-weight: 600; }
+.fc { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 8px 32px rgba(14,13,11,.06), 0 2px 8px rgba(14,13,11,.04); }
+.fc-head { background: var(--cream2); border-bottom: 1px solid var(--border); padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; }
+.fc-wdots { display: flex; gap: 6px; }
+.fc-wdots span { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+.fc-name { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink3); letter-spacing: .06em; }
+.fc-body { padding: 22px; display: flex; flex-direction: column; gap: 16px; }
+.fc-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink3); letter-spacing: .09em; text-transform: uppercase; margin-bottom: 6px; }
+.fc-row { display: flex; justify-content: space-between; align-items: center; }
+.fc-num { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500; }
+.bg-bar { height: 4px; background: var(--cream3); border-radius: 2px; margin-top: 7px; }
+.fill-bar { height: 4px; border-radius: 2px; }
+.fc-div { height: 1px; background: var(--border); }
+.fc-insight { background: var(--gl); border: 1px solid var(--gm); border-radius: 8px; padding: 12px; }
+.fc-insight p { font-size: 12px; color: #2d6b4e; line-height: 1.5; }
+.fc-insight strong { color: var(--green); }
+.pattern-item { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+.pattern-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink3); letter-spacing: .07em; margin-bottom: 5px; text-transform: uppercase; }
+.pattern-text { font-size: 12px; color: var(--ink2); line-height: 1.5; }
+.hi { color: var(--green); font-weight: 600; }
+.wa { color: var(--amber); font-weight: 500; }
+.ba { color: var(--red); font-weight: 500; }
+.sync-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--gl); border: 1px solid var(--gm); border-radius: 20px; padding: 4px 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--green); margin-top: 12px; }
+.sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* QUOTES */
+.quotes-bg { background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.quotes-inner { max-width: 1200px; margin: 0 auto; padding: 100px 56px; }
+.q-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 52px; flex-wrap: wrap; gap: 20px; }
+.q-sub { font-size: 15px; color: var(--ink2); font-weight: 300; max-width: 280px; text-align: right; }
+.q-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.q-card { background: var(--white); padding: 36px 32px; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; transition: background .2s; position: relative; min-height: 320px; overflow: hidden; }
+.q-card:hover { background: var(--cream); }
+.q-slide { position: absolute; inset: 36px 32px; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; opacity: 0; transform: translateY(8px); transition: opacity .55s ease, transform .55s ease; pointer-events: none; }
+.q-slide.on { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.q-progress { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--cream2); }
+.q-progress-fill { height: 100%; background: var(--green); width: 0%; }
+.q-mark { font-family: 'Fraunces', serif; font-size: 80px; color: var(--cream3); line-height: 1; margin-bottom: -16px; }
+.q-text { font-size: 15px; color: var(--ink2); line-height: 1.7; font-weight: 300; }
+.q-text strong { color: var(--ink); font-weight: 500; }
+.q-source { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink3); border-top: 1px solid var(--border); padding-top: 20px; }
+
+/* PRICING */
+.pricing-section { padding: 100px 56px; max-width: 1200px; margin: 0 auto; }
+.pricing-head { text-align: center; margin-bottom: 56px; }
+.pricing-head h2 { font-size: clamp(34px, 4vw, 52px); margin-bottom: 14px; }
+.pricing-head p { font-size: 17px; color: var(--ink2); font-weight: 300; }
+.p-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 760px; margin: 0 auto; }
+.p-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 36px; }
+.p-card.feat { border: 2px solid var(--green); }
+.p-tier { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink3); }
+.p-price { font-family: 'Fraunces', serif; font-weight: 800; font-size: 54px; line-height: 1; color: var(--ink); margin-bottom: 6px; }
+.p-price sup { font-size: 22px; vertical-align: super; }
+.p-price span { font-size: 18px; color: var(--ink2); font-family: 'Manrope', sans-serif; font-weight: 300; }
+.p-desc { font-size: 13px; color: var(--ink2); margin-bottom: 28px; }
+.p-feats { list-style: none; display: flex; flex-direction: column; gap: 11px; margin-bottom: 32px; }
+.p-feats li { font-size: 14px; color: var(--ink2); display: flex; gap: 10px; }
+.pck { color: var(--green); flex-shrink: 0; }
+.p-btn { width: 100%; padding: 14px; border-radius: 8px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; background: transparent; color: var(--ink2); border: 1px solid var(--border2); transition: all .15s; }
+.p-btn:hover { color: var(--ink); border-color: var(--ink); }
+.p-btn.feat { background: var(--green); color: #fff; border-color: var(--green); }
+.p-btn.feat:hover { background: var(--green2); border-color: var(--green2); }
+
+/* FINAL CTA */
+.final { background: var(--ink); padding: 120px 56px; text-align: center; }
+.final-inner { max-width: 680px; margin: 0 auto; }
+.final h2 { font-family: 'Fraunces', serif; font-weight: 800; font-size: clamp(38px, 5.5vw, 72px); line-height: .97; letter-spacing: -.02em; color: #f0ede7; margin-bottom: 22px; }
+.final h2 em { color: #4cff8e; font-style: italic; }
+.final p { font-size: 18px; color: #888882; font-weight: 300; margin-bottom: 48px; line-height: 1.65; }
+.final-form { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.inp { flex: 1; background: var(--white); border: 1px solid var(--border2); color: var(--ink); font-family: 'Manrope', sans-serif; font-size: 15px; padding: 13px 16px; border-radius: 7px; outline: none; transition: border-color .15s; }
+.inp:focus { border-color: var(--green); }
+.inp::placeholder { color: var(--ink3); }
+.final .inp { background: #181715; border-color: #2a2826; color: #f0ede7; max-width: 280px; }
+.final .inp:focus { border-color: #4cff8e; }
+.final .inp::placeholder { color: #4a4844; }
+
+/* FOOTER */
+.foot-manifesto { background: var(--white); border-top: 1px solid var(--border); padding: 48px 56px; text-align: center; }
+.foot-manifesto p { max-width: 620px; margin: 0 auto; font-family: 'Fraunces', serif; font-style: italic; font-size: 17px; color: var(--ink2); line-height: 1.6; }
+.foot-manifesto p strong { font-style: normal; font-family: 'Manrope', sans-serif; font-weight: 500; color: var(--ink); }
+.foot-sig { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink3); letter-spacing: .08em; margin-top: 16px; text-transform: uppercase; }
+footer { padding: 32px 56px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--white); }
+.foot-logo { display: flex; align-items: center; gap: 8px; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 15px; color: var(--ink2); }
+.foot-mark { width: 22px; height: 22px; background: var(--green); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+.foot-mark svg { width: 14px; height: 14px; }
+.foot-links { display: flex; gap: 24px; }
+.foot-link { font-size: 13px; color: var(--ink3); text-decoration: none; transition: color .15s; }
+.foot-link:hover { color: var(--ink2); }
+.foot-note { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink3); }
+
+/* ========== LIVE HERO ARTIFACT ========== */
+.live-wrap { max-width: 1180px; margin: 56px auto 0; padding: 0 56px; }
+.live-frame {
+  background: #0c0c0a; border-radius: 16px; overflow: hidden;
+  border: 1px solid #2a2826;
+  box-shadow: 0 48px 120px rgba(14,13,11,.22), 0 8px 32px rgba(14,13,11,.12), 0 0 0 1px rgba(255,255,255,.03);
+}
+.live-titlebar { background: #181715; border-bottom: 1px solid #2a2826; padding: 13px 20px; display: flex; align-items: center; gap: 14px; }
+.live-titlebar .vdots span { background: #3d3d3b; }
+.live-status { margin-left: auto; display: flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6aaa80; letter-spacing: .06em; text-transform: uppercase; }
+.live-status .dot { width: 7px; height: 7px; border-radius: 50%; background: #4cff8e; box-shadow: 0 0 8px #4cff8e; animation: pulse 1.6s infinite; }
+.live-clock { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #4a4844; letter-spacing: .04em; }
+
+.live-body { display: grid; grid-template-columns: 1.1fr 1fr; background: #0c0c0a; min-height: 480px; }
+.live-panel { padding: 28px 30px; display: flex; flex-direction: column; gap: 18px; }
+.live-panel.left { border-right: 1px solid #1f1d1b; background: linear-gradient(180deg, #0e1410 0%, #0a0c0a 100%); }
+.live-panel.right { background: #0a0c0a; }
+
+.lp-section-head { display: flex; align-items: center; justify-content: space-between; }
+.lp-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #4a6a56; letter-spacing: .1em; text-transform: uppercase; }
+.lp-val { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 500; color: #c8c4bc; }
+.lp-val.green { color: #4cff8e; }
+.lp-val.amber { color: #f0a030; }
+.lp-val.red { color: #ff6060; }
+
+.lp-bar { height: 5px; background: #1a201c; border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.lp-fill { height: 100%; border-radius: 3px; transition: width .6s cubic-bezier(.2,.8,.2,1), background .3s; }
+.lp-fill.green { background: linear-gradient(90deg, #1a5c3e, #4cff8e); }
+.lp-fill.amber { background: linear-gradient(90deg, #7c4a00, #f0a030); }
+.lp-fill.red { background: linear-gradient(90deg, #5c1212, #ff6060); }
+
+.lp-divider { height: 1px; background: #1f1d1b; margin: 4px 0; }
+
+.lp-pnl { display: flex; align-items: baseline; gap: 12px; }
+.lp-pnl-num { font-family: 'Fraunces', serif; font-weight: 800; font-size: 42px; line-height: 1; transition: color .3s; }
+.lp-pnl-num.green { color: #4cff8e; }
+.lp-pnl-num.red { color: #ff6060; }
+.lp-pnl-sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5c5a54; }
+
+.lp-trades { display: flex; flex-direction: column; gap: 6px; max-height: 140px; overflow: hidden; position: relative; }
+.lp-trade { display: grid; grid-template-columns: 64px 1fr auto; gap: 10px; padding: 7px 10px; background: #12120f; border: 1px solid #1f1d1b; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; align-items: center; opacity: 0; transform: translateY(-6px); animation: tradeIn .4s forwards; }
+.lp-trade.win { border-left: 2px solid #4cff8e; }
+.lp-trade.loss { border-left: 2px solid #ff6060; }
+.lp-trade.flat { border-left: 2px solid #4a4844; }
+.lp-trade-time { color: #4a4844; }
+.lp-trade-sym { color: #c8c4bc; }
+.lp-trade-pnl.win { color: #4cff8e; }
+.lp-trade-pnl.loss { color: #ff6060; }
+.lp-trade-pnl.flat { color: #888882; }
+@keyframes tradeIn { to { opacity: 1; transform: translateY(0); } }
+
+/* Right panel — alerts feed + saved counter */
+.lp-saved-card { background: linear-gradient(135deg, rgba(26,92,62,.18), rgba(26,92,62,.06)); border: 1px solid rgba(76,255,142,.18); border-radius: 10px; padding: 18px 20px; }
+.lp-saved-num { font-family: 'Fraunces', serif; font-weight: 800; font-size: 38px; color: #4cff8e; line-height: 1; transition: transform .3s; }
+.lp-saved-num.bump { transform: scale(1.08); }
+.lp-saved-cap { font-size: 12px; color: #888882; margin-top: 6px; line-height: 1.4; }
+
+.lp-alerts { display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 220px; }
+.lp-alerts-head { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #4a4844; letter-spacing: .1em; text-transform: uppercase; }
+.lp-alert {
+  border-radius: 7px; padding: 11px 13px;
+  font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.5;
+  display: flex; gap: 10px;
+  opacity: 0; transform: translateX(8px);
+  animation: alertIn .45s forwards;
+}
+.lp-alert .ai { flex-shrink: 0; font-size: 12px; }
+.lp-alert.info { background: rgba(76,140,200,.08); border: 1px solid rgba(76,140,200,.18); color: #8ab4d8; }
+.lp-alert.warn { background: rgba(240,160,48,.1); border: 1px solid rgba(240,160,48,.22); color: #f0a030; }
+.lp-alert.crit { background: rgba(255,96,96,.08); border: 1px solid rgba(255,96,96,.22); color: #ff8080; }
+.lp-alert.good { background: rgba(76,255,142,.08); border: 1px solid rgba(76,255,142,.18); color: #6aaa80; }
+@keyframes alertIn { to { opacity: 1; transform: translateX(0); } }
+
+.lp-action { display: flex; gap: 8px; margin-top: 4px; }
+.lp-btn { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 7px 12px; border-radius: 5px; cursor: pointer; border: 1px solid #2a2826; background: transparent; color: #888882; letter-spacing: .04em; }
+.lp-btn:hover { color: #c8c4bc; border-color: #3d3d3b; }
+.lp-btn.primary { background: rgba(26,92,62,.4); color: #4cff8e; border-color: rgba(76,255,142,.3); }
+
+/* Hero scrub track */
+.live-scrub { background: #181715; border-top: 1px solid #1f1d1b; padding: 12px 24px; display: flex; align-items: center; gap: 16px; }
+.live-scrub-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #4a4844; letter-spacing: .08em; text-transform: uppercase; min-width: 70px; }
+.live-scrub-track { flex: 1; height: 4px; background: #0c0c0a; border-radius: 2px; position: relative; cursor: pointer; }
+.live-scrub-prog { position: absolute; left: 0; top: 0; height: 100%; background: #4cff8e; border-radius: 2px; transition: width .1s linear; }
+.live-scrub-time { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #888882; min-width: 50px; text-align: right; }
+
+/* ========== SCRUBBABLE TIMELINE ========== */
+.timeline-section { padding: 110px 56px; max-width: 1200px; margin: 0 auto; }
+.timeline-head { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: end; margin-bottom: 56px; }
+.timeline-head .feat-p { margin-bottom: 0; }
+
+.timeline-stage { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: stretch; }
+
+/* Trader's day card (left) */
+.day-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 14px;
+  padding: 28px; display: flex; flex-direction: column; gap: 20px;
+  box-shadow: 0 8px 32px rgba(14,13,11,.06);
+}
+.day-card-head { display: flex; align-items: center; justify-content: space-between; }
+.day-card-name { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink3); letter-spacing: .08em; text-transform: uppercase; }
+.day-card-time { font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--ink); font-weight: 500; letter-spacing: .03em; }
+.day-event-title { font-family: 'Fraunces', serif; font-weight: 800; font-size: 28px; line-height: 1.1; color: var(--ink); letter-spacing: -.01em; min-height: 64px; }
+.day-event-title em { color: var(--green); font-style: italic; }
+.day-event-body { font-size: 14.5px; color: var(--ink2); line-height: 1.65; font-weight: 300; min-height: 90px; }
+.day-event-body strong { color: var(--ink); font-weight: 500; }
+
+.day-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-top: auto; }
+.day-stat { background: var(--cream); padding: 14px 16px; }
+.day-stat-l { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink3); letter-spacing: .08em; text-transform: uppercase; }
+.day-stat-v { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 500; color: var(--ink); margin-top: 4px; transition: color .3s; }
+.day-stat-v.green { color: var(--green); }
+.day-stat-v.amber { color: var(--amber); }
+.day-stat-v.red { color: var(--red); }
+
+/* Timeline track */
+.tl-card {
+  background: var(--ink); border-radius: 14px; padding: 24px;
+  display: flex; flex-direction: column; gap: 18px; min-height: 100%;
+  box-shadow: 0 8px 32px rgba(14,13,11,.12);
+}
+.tl-card-head { display: flex; align-items: center; justify-content: space-between; }
+.tl-card-name { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #5c5a54; letter-spacing: .1em; text-transform: uppercase; }
+.tl-card-state { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 3px 10px; border-radius: 4px; letter-spacing: .08em; text-transform: uppercase; transition: all .3s; }
+.tl-card-state.idle { background: rgba(120,120,110,.12); color: #888882; }
+.tl-card-state.active { background: rgba(76,255,142,.12); color: #4cff8e; }
+.tl-card-state.warn { background: rgba(240,160,48,.12); color: #f0a030; }
+.tl-card-state.block { background: rgba(255,96,96,.12); color: #ff6060; }
+
+.tl-pnl-area { display: flex; flex-direction: column; gap: 10px; }
+.tl-pnl-row { display: flex; align-items: baseline; justify-content: space-between; }
+.tl-pnl-num { font-family: 'Fraunces', serif; font-weight: 800; font-size: 44px; line-height: 1; color: #f0ede7; transition: color .3s; }
+.tl-pnl-num.green { color: #4cff8e; }
+.tl-pnl-num.red { color: #ff6060; }
+.tl-pnl-cap { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5c5a54; }
+
+.tl-bar-row { display: flex; flex-direction: column; gap: 6px; }
+.tl-bar-l { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #888882; letter-spacing: .08em; text-transform: uppercase; display: flex; justify-content: space-between; }
+.tl-bar-l span:last-child { color: #c8c4bc; }
+.tl-bar { height: 6px; background: #1f1d1b; border-radius: 3px; overflow: hidden; }
+.tl-bar-fill { height: 100%; border-radius: 3px; transition: width .5s cubic-bezier(.2,.8,.2,1), background .3s; }
+.tl-bar-fill.green { background: linear-gradient(90deg, #1a5c3e, #4cff8e); }
+.tl-bar-fill.amber { background: linear-gradient(90deg, #7c4a00, #f0a030); }
+.tl-bar-fill.red { background: linear-gradient(90deg, #5c1212, #ff6060); }
+
+.tl-msg { background: #181715; border: 1px solid #2a2826; border-radius: 8px; padding: 13px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.55; color: #c8c4bc; min-height: 70px; transition: all .3s; }
+.tl-msg.warn { border-color: rgba(240,160,48,.3); background: rgba(240,160,48,.06); color: #f0a030; }
+.tl-msg.crit { border-color: rgba(255,96,96,.3); background: rgba(255,96,96,.06); color: #ff8080; }
+.tl-msg.good { border-color: rgba(76,255,142,.25); background: rgba(76,255,142,.05); color: #6aaa80; }
+.tl-msg-pre { font-size: 9.5px; color: #5c5a54; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 5px; }
+
+/* Scrubber row */
+.scrubber-wrap {
+  margin-top: 40px; background: var(--white); border: 1px solid var(--border); border-radius: 14px;
+  padding: 22px 28px 28px; box-shadow: 0 8px 32px rgba(14,13,11,.04);
+}
+.scrubber-times { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink3); letter-spacing: .08em; margin-bottom: 14px; }
+.scrubber-track {
+  position: relative; height: 56px;
+  background: linear-gradient(180deg, var(--cream) 0%, var(--cream2) 100%);
+  border: 1px solid var(--border); border-radius: 8px;
+  cursor: pointer; user-select: none;
+}
+.scrubber-zones { position: absolute; inset: 0; display: flex; pointer-events: none; }
+.scrubber-zone { height: 100%; border-right: 1px solid rgba(0,0,0,.04); }
+.scrubber-zone:last-child { border-right: 0; }
+.zone-pre { background: rgba(26,92,62,.04); }
+.zone-active { background: rgba(26,92,62,.07); }
+.zone-warn { background: rgba(240,160,48,.06); }
+.zone-late { background: rgba(139,26,26,.05); }
+
+.scrubber-events { position: absolute; inset: 0; pointer-events: none; }
+.scrubber-event {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--white); border: 2px solid var(--ink2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600;
+  pointer-events: auto; cursor: pointer; transition: all .2s;
+}
+.scrubber-event:hover { transform: translate(-50%, -50%) scale(1.15); }
+.scrubber-event.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+.scrubber-event.event-good { border-color: var(--green); color: var(--green); }
+.scrubber-event.event-good.active { background: var(--green); color: #fff; }
+.scrubber-event.event-warn { border-color: var(--amber); color: var(--amber); }
+.scrubber-event.event-warn.active { background: var(--amber); color: #fff; }
+.scrubber-event.event-crit { border-color: var(--red); color: var(--red); }
+.scrubber-event.event-crit.active { background: var(--red); color: #fff; }
+.scrubber-event-tip {
+  position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: var(--cream); font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; padding: 5px 9px; border-radius: 4px; white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity .15s; letter-spacing: .04em;
+}
+.scrubber-event:hover .scrubber-event-tip { opacity: 1; }
+
+.scrubber-handle {
+  position: absolute; top: -6px; bottom: -6px; width: 4px;
+  background: var(--green); border-radius: 2px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 0 4px rgba(26,92,62,.15), 0 4px 12px rgba(26,92,62,.3);
+  pointer-events: none; transition: left .1s linear;
+}
+.scrubber-handle::before {
+  content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  border: 6px solid transparent; border-top-color: var(--green);
+}
+
+.scrubber-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; gap: 16px; }
+.scrubber-current {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink2);
+}
+.scrubber-current strong { color: var(--ink); font-weight: 600; }
+.scrubber-play {
+  width: 36px; height: 36px; border-radius: 50%; background: var(--green); color: #fff;
+  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.scrubber-play:hover { background: var(--green2); }
+.scrubber-play svg { width: 14px; height: 14px; fill: #fff; }
+.scrubber-hint { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink3); }
+
+@keyframes heroPulse {
+  0% { box-shadow: 0 0 0 0 rgba(26,92,62,.36); }
+  70% { box-shadow: 0 0 0 9px rgba(26,92,62,0); }
+  100% { box-shadow: 0 0 0 0 rgba(26,92,62,0); }
+}
+@keyframes underlineSweep {
+  0%, 100% { transform: scaleX(.68); opacity: .55; }
+  48% { transform: scaleX(1); opacity: 1; }
+}
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-pulse, .hero-action::after, .hero-risk-card { animation: none; }
+}
+
+@media (max-width: 960px) {
+  .live-wrap { padding: 0 20px; }
+  .live-body { grid-template-columns: 1fr; min-height: auto; }
+  .live-panel.left { border-right: none; border-bottom: 1px solid #1f1d1b; }
+  .timeline-section { padding: 72px 20px; }
+  .timeline-head { grid-template-columns: 1fr; gap: 24px; }
+  .timeline-stage { grid-template-columns: 1fr; gap: 20px; }
+}
+
+/* UTILS */
+.succ { display: none; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--green); margin-top: 12px; }
+.final .succ { color: #4cff8e; }
+.fade { opacity: 0; transform: translateY(20px); transition: opacity .65s ease, transform .65s ease; }
+.fade.up { opacity: 1; transform: none; }
+
+.mood-row { display: flex; gap: 5px; }
+.mpip { width: 16px; height: 16px; border-radius: 3px; }
+
+@media (max-width: 960px) {
+  nav { padding: 12px 16px 0; height: 76px; }
+  .nav-shell { height: 52px; border-radius: 16px; padding: 7px 7px 7px 10px; }
+  .logo { font-size: 17px; gap: 9px; }
+  .logo-mark { width: 32px; height: 32px; border-radius: 10px; }
+  .nav-badge { display: none; }
+  .nav-r .nav-link { display: none; }
+  .nav-btn { padding: 11px 15px; border-radius: 12px; margin-left: 0; }
+  .hero { padding: 110px 20px 58px; }
+  .hero-live-strip { border-radius: 18px; padding: 8px 10px; }
+  .hero-risk-cards { grid-template-columns: 1fr; margin-bottom: 28px; }
+  .hero-risk-card { text-align: center; }
+  .video-wrap { padding: 0 20px; }
+  .diff-inner, .feat-row, .feat-row.rev { grid-template-columns: 1fr; gap: 40px; direction: ltr; }
+  .diff-3col { grid-template-columns: 1fr; }
+  .pattern-grid { grid-template-columns: 1fr; }
+  .patterns-section { padding: 72px 20px; }
+  .how-section, .bcost-section { padding: 72px 20px; }
+  .bcost-grid { grid-template-columns: 1fr; gap: 40px; }
+  .how-step-title { font-size: 22px; }
+  .diff-band { padding: 72px 20px; }
+  .stats-inner { grid-template-columns: 1fr 1fr; padding: 0 20px; }
+  .stat { padding-left: 20px; }
+  .feat { padding: 72px 20px; }
+  .feat-sep { margin: 0 20px; }
+  .gap-section { padding: 72px 20px; }
+  .q-grid { grid-template-columns: 1fr; }
+  .p-grid { grid-template-columns: 1fr; }
+  .quotes-inner, .pricing-section { padding: 72px 20px; }
+  .final { padding: 80px 20px; }
+  .final-form { flex-direction: column; align-items: center; }
+  .final .inp { max-width: 100%; width: 100%; }
+  footer { padding: 24px 20px; flex-direction: column; gap: 16px; text-align: center; }
+  .foot-links { flex-wrap: wrap; justify-content: center; }
+}
+
+/* MOBILE POLISH PASS */
+@media (max-width: 640px) {
+  html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+  nav { padding: 10px 12px 0; height: 68px; }
+  .nav-shell { height: 48px; padding: 7px 7px 7px 9px; border-radius: 15px; }
+  .logo { font-size: 16px; gap: 8px; min-width: 0; }
+  .logo-mark { width: 30px; height: 30px; border-radius: 9px; flex: 0 0 auto; }
+  .logo-mark svg { width: 16px; height: 16px; }
+  .nav-btn { font-size: 13px; padding: 10px 13px; white-space: nowrap; }
+
+  .hero { padding: 92px 14px 44px; }
+  .hero::before { inset: 70px 0 auto; height: 300px; border-radius: 24px; }
+  .hero-eyebrow { font-size: 9px; line-height: 1.5; letter-spacing: .08em; gap: 8px; margin-bottom: 18px; padding: 0 8px; }
+  .hero-eyebrow::before, .hero-eyebrow::after { width: 14px; flex: 0 0 14px; }
+  h1 { font-size: clamp(42px, 14vw, 56px); line-height: .92; letter-spacing: -.035em; margin-bottom: 24px; }
+
+  .hero-signal {
+    width: min(100%, 348px);
+    max-width: calc(100vw - 24px);
+    gap: 5px;
+    min-height: 100px;
+    margin-bottom: 24px;
+  }
+  .hero-signal::before { left: 46px; right: 46px; opacity: .7; }
+  .signal-card {
+    min-width: 0;
+    width: 92px;
+    flex: 0 0 92px;
+    padding: 10px 8px;
+    border-radius: 13px;
+    box-shadow: 0 12px 30px rgba(14,13,11,.05);
+  }
+  .signal-card span, .signal-label { font-size: 8px; letter-spacing: .09em; }
+  .signal-card strong { font-size: 12px; line-height: 1.15; min-height: 28px; display: flex; align-items: center; justify-content: center; }
+  .signal-core { width: 96px; height: 96px; flex: 0 0 96px; }
+  .signal-ring { inset: 10px; }
+  .signal-dot { width: 28px; height: 28px; margin-bottom: 7px; box-shadow: 0 0 0 7px rgba(26,92,62,.08), 0 12px 26px rgba(26,92,62,.16); }
+  .signal-label { max-width: 86px; line-height: 1.25; }
+
+  .hero-cta { flex-direction: column; align-items: stretch; width: min(100%, 340px); margin-left: auto; margin-right: auto; }
+  .btn-p, .btn-g { width: 100%; padding: 14px 18px; }
+
+  .video-wrap { margin-top: 34px; padding: 0 14px; }
+  .video-frame { border-radius: 14px; }
+  .video-titlebar { padding: 10px 12px; gap: 8px; overflow: hidden; }
+  .vtabs { display: none; }
+  .url-pill { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .video-card { width: calc(100% - 28px); padding: 16px; }
+  .video-card-title { font-size: 14px; }
+  .video-card-row { grid-template-columns: 1fr; gap: 6px; }
+
+  .diff-band, .patterns-section, .how-section, .bcost-section, .gap-section, .feat, .quotes-inner, .pricing-section, .final { padding-left: 14px; padding-right: 14px; }
+  .diff-band, .patterns-section, .how-section, .bcost-section, .gap-section, .feat, .quotes-inner, .pricing-section { padding-top: 62px; padding-bottom: 62px; }
+  .section-title { font-size: clamp(34px, 11vw, 46px); line-height: 1; }
+  .section-sub, .gap-sub { font-size: 15px; }
+
+  .diff-cols, .diff-3col { border-radius: 14px; }
+  .diff-card, .diff-3-card, .pattern-card, .q-card, .p-card { padding: 24px 20px; }
+  .pattern-card-title { font-size: 25px; }
+  .how-step { grid-template-columns: 44px 1fr; gap: 14px; }
+  .how-num { width: 44px; height: 44px; font-size: 13px; }
+  .bcost-card, .feat-card { max-width: 100%; overflow: hidden; }
+
+  .gap-table-wrap {
+    margin-left: -14px;
+    margin-right: -14px;
+    padding: 0 14px 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .gap-table { min-width: 760px; }
+  .gap-table th, .gap-table td { padding: 12px 14px; font-size: 13px; }
+  .gap-note { font-size: 11px; line-height: 1.6; }
+
+  .stats-inner { grid-template-columns: 1fr; gap: 0; padding: 0 14px; }
+  .stat { border-left: none; border-top: 1px solid var(--border); padding: 18px 0; }
+  .stat:first-child { border-top: none; }
+  .stat-num { font-size: 34px; }
+
+  .q-grid, .p-grid { border-radius: 14px; overflow: hidden; }
+  .q-card { min-height: 280px; }
+  .q-slide { inset: 24px 20px; }
+  .final h2 { font-size: clamp(38px, 12vw, 54px); }
+  .final-form { width: 100%; }
+  .final .inp { width: 100%; }
+}
+
+@media (max-width: 360px) {
+  .nav-btn { padding: 9px 10px; font-size: 12px; }
+  .logo { font-size: 15px; }
+  h1 { font-size: 39px; }
+  .hero-signal { gap: 3px; }
+  .signal-card { width: 82px; flex-basis: 82px; padding-left: 6px; padding-right: 6px; }
+  .signal-core { width: 86px; height: 86px; flex-basis: 86px; }
+  .signal-card strong { font-size: 11px; }
+  .signal-label { font-size: 7.5px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-shell">
+    <a href="#" class="logo" aria-label="PsyRule home">
+      <div class="logo-mark"><svg viewBox="0 0 16 16" fill="none"><path d="M 12.33 5.5 A 5 5 0 1 0 12.33 10.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/><path d="M 13.2 5 L 10.6 11" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+      <span class="logo-word">Psy<em style="font-style: italic; color: rgb(26, 92, 62); font-family: 'Fraunces',serif; font-weight: 800">Rule</em></span>
+    </a>
+    <div class="nav-r">
+      <a href="#how" class="nav-link">How it works</a>
+      <a href="#gap" class="nav-link">Compare</a>
+      <a href="#pricing" class="nav-link">Pricing</a>
+      <a href="/login" class="nav-link">Log in</a>
+      <a href="/signup" class="nav-btn">Sign up</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero fade hero-minimal" style="text-align: center;">
+  <div class="hero-eyebrow"><span class="hero-pulse"></span> Behavioral risk management for funded traders</div>
+  <h1>You already know<br>it's about <em class="hero-action">psychology.</em><br>Now do something<br>about it.</h1>
+
+  <div class="hero-signal" aria-label="PsyRule behavioral risk signal preview">
+    <div class="signal-card signal-card-left">
+      <span>Trigger</span>
+      <strong id="signalTrigger">First loss</strong>
+    </div>
+    <div class="signal-core">
+      <div class="signal-ring"></div>
+      <div class="signal-dot"></div>
+      <div class="signal-label is-detected" id="signalStatus">Pattern detected</div>
+    </div>
+    <div class="signal-card signal-card-right">
+      <span>Rule</span>
+      <strong id="signalRule">Cooldown</strong>
+    </div>
+  </div>
+
+  <div class="hero-cta">
+    <a href="/signup" class="btn-p" id="hero-cta-primary">Claim founding price · $19/mo</a>
+    <a href="#how" class="btn-g">See how it works</a>
+  </div>
+  <p class="hero-note">Detect the loop. Set the rule. Protect the account.</p>
+
+  <!-- Founding counter — moved up from pricing -->
+  <div class="hero-founding" id="hero-founding" aria-live="polite">
+    <span class="hf-dot"></span>
+    <span class="hf-text" id="hero-founding-text">Up to 100 founding spots</span>
+  </div>
+</div>
+
+<!-- LIVE HERO ARTIFACT -->
+<div class="live-wrap fade">
+  <div class="live-frame">
+    <div class="live-titlebar">
+      <div class="vdots"><span></span><span></span><span></span></div>
+      <div class="vtabs">
+        <div class="vtab active">Live session</div>
+      </div>
+      <div class="live-clock" id="live-clock">10:42:18</div>
+      <div class="live-status"><span class="dot"></span>Live · FTMO 100k</div>
+    </div>
+
+    <div class="live-body">
+      <!-- LEFT: behavioral pattern detection -->
+      <div class="live-panel left">
+        <div>
+          <div class="lp-section-head">
+            <div class="lp-lbl">Today's tilt risk</div>
+            <div class="lp-val amber" id="live-pnl-pct">Caution</div>
+          </div>
+          <div class="lp-pnl" style="margin-top:6px;">
+            <div class="lp-pnl-num amber" id="live-pnl" style="color:#f0a030;">74<span style="font-size:18px;color:#5c5a54;font-family:'JetBrains Mono',monospace;font-weight:400;"> / 100</span></div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#888882;line-height:1.55;margin-top:10px;">
+            Trigger: <span style="color:#c8c4bc;">first loss before 10:30</span><br>
+            Median post-loss wait: <span style="color:#c8c4bc;">12 min</span> · Today: <span style="color:#f0a030;">4 min</span>
+          </div>
+        </div>
+
+        <div class="lp-divider"></div>
+
+        <div>
+          <div class="lp-lbl" style="margin-bottom:8px;">Detected pattern</div>
+          <div style="font-family:'Fraunces',serif;font-style:italic;font-weight:700;font-size:18px;color:#f0ede7;line-height:1.25;">Risk increased after first loss.</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#888882;margin-top:8px;line-height:1.5;">Matches your <span style="color:#ff8080;">revenge-trading</span> pattern from <span style="color:#c8c4bc;">6 previous sessions</span>.</div>
+        </div>
+
+        <div class="lp-divider"></div>
+
+        <div>
+          <div class="lp-lbl" style="margin-bottom:8px;">Current behavior state</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f0a030;box-shadow:0 0 8px #f0a030;"></span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:14px;color:#f0a030;font-weight:500;letter-spacing:.04em;">CAUTION</span>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#888882;margin-top:8px;line-height:1.55;">Re-entry time shortened · position size increased after loss.</div>
+        </div>
+
+        <div class="lp-divider"></div>
+
+        <div>
+          <div class="lp-lbl" style="margin-bottom:8px;">Session context</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#5c5a54;letter-spacing:.08em;text-transform:uppercase;">Mood</div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#f0a030;margin-top:3px;">Impatient</div></div>
+            <div><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#5c5a54;letter-spacing:.08em;text-transform:uppercase;">Confidence</div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#c8c4bc;margin-top:3px;">4 / 5</div></div>
+            <div><div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#5c5a54;letter-spacing:.08em;text-transform:uppercase;">Temptation</div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#ff8080;margin-top:3px;">Elevated</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: suggested protection + secondary metrics -->
+      <div class="live-panel right">
+        <div class="lp-saved-card">
+          <div class="lp-lbl" style="color:#6aaa80;margin-bottom:8px;">Pattern surfaced</div>
+          <div style="font-family:'Fraunces',serif;font-weight:800;font-size:22px;color:#4cff8e;line-height:1.15;">−$312 average cost</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#888882;margin-top:10px;line-height:1.55;">Last 6 sessions where this pattern fired cost an avg of <span style="color:#c8c4bc;">$312</span>. Surfaced now so the next decision is informed.</div>
+        </div>
+
+        <div class="lp-alerts">
+          <div class="lp-alerts-head">Behavioral feed</div>
+          <div id="live-alerts" style="display:flex;flex-direction:column;gap:8px;flex:1;"></div>
+        </div>
+
+        <div style="border-top:1px solid #1f1d1b;padding-top:14px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+          <div>
+            <div class="lp-lbl">Daily P&amp;L</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#c8c4bc;margin-top:3px;" id="live-pnl-mini">+$78</div>
+          </div>
+          <div>
+            <div class="lp-lbl">Loss proximity</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#c8c4bc;margin-top:3px;"><span id="live-loss-val">52%</span></div>
+            <div class="lp-bar" style="margin-top:5px;height:3px;"><div class="lp-fill amber" id="live-loss-bar" style="width:52%"></div></div>
+          </div>
+          <div>
+            <div class="lp-lbl">Drawdown</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#c8c4bc;margin-top:3px;"><span id="live-exp-val">30%</span></div>
+            <div class="lp-bar" style="margin-top:5px;height:3px;"><div class="lp-fill amber" id="live-exp-bar" style="width:30%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="live-scrub">
+      <div class="live-scrub-lbl">Session</div>
+      <div class="live-scrub-track" id="live-scrub-track"><div class="live-scrub-prog" id="live-scrub-prog" style="width:0%"></div></div>
+      <div class="live-scrub-time" id="live-scrub-time">00:00</div>
+    </div>
+  </div>
+  <p class="hero-note" style="text-align:center;margin-top:18px;">Live simulation · scripted from a real funded-trader session</p>
+</div>
+
+<!-- DIFF BAND — Not a journal. Not a blocker. -->
+<div class="diff-band fade" style="margin-top:80px;">
+  <div class="diff-inner" style="grid-template-columns: 1fr; gap: 60px;">
+    <div style="text-align:center;max-width:780px;margin:0 auto;">
+      <div class="diff-label" style="justify-content:center;">The behavioral layer</div>
+      <div class="diff-h" style="font-size:clamp(32px, 3.6vw, 52px);">Not a journal.<br>Not a blocker.<br><em>A behavioral risk layer.</em></div>
+      <p class="diff-p" style="margin:0 auto;max-width:600px;">Journals show what happened after the damage is done. Rule blockers stop trades without teaching you the pattern. PsyRule shows the behavioral sequence behind your worst sessions — so you can fix the cause, not just restrict the action.</p>
+    </div>
+    <div class="diff-3col">
+      <div class="diff-3-card">
+        <div class="diff-3-tag" style="color:#888882;">Trading journals</div>
+        <div class="diff-3-title">What happened</div>
+        <div class="diff-3-line"></div>
+        <p class="diff-3-body">Logs trades after the session ends. By the time you review on Sunday, the loop has already run.</p>
+      </div>
+      <div class="diff-3-card">
+        <div class="diff-3-tag" style="color:#888882;">Rule blockers</div>
+        <div class="diff-3-title">What you cannot do</div>
+        <div class="diff-3-line"></div>
+        <p class="diff-3-body">Stops an action without explaining the pattern. You comply once, learn nothing, and the next session repeats it.</p>
+      </div>
+      <div class="diff-3-card on">
+        <div class="diff-3-tag" style="color:#4cff8e;">PsyRule</div>
+        <div class="diff-3-title" style="color:#f0ede7;">Why you keep doing it</div>
+        <div class="diff-3-line on"></div>
+        <p class="diff-3-body" style="color:#c8c4bc;">Detects the recurring behavioral sequence behind your worst sessions and turns it into a personalized discipline rule.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MANIFESTO INSET -->
+<div class="manifesto fade">
+  <div class="manifesto-mark" style="font-size: 14px">WHY THIS EXISTS</div>
+  <p class="manifesto-text">I failed prop firm challenges before I admitted it wasn't the strategy. It was me, at 11:02am, after a stop-out. PsyRule is the tool I wish had existed then.</p>
+  <div class="manifesto-attr">— The founder · currently profitable</div>
+</div>
+
+<!-- YOUR PATTERN IS SPECIFIC -->
+<div class="patterns-section fade" id="patterns">
+  <div class="patterns-inner">
+    <div class="patterns-head">
+      <div class="section-tag"><span class="ch">01</span>Your pattern is specific</div>
+      <h2>Generic discipline advice<br>does not work because<br><em>your pattern is specific.</em></h2>
+      <p class="gap-sub" style="max-width:580px;">Behavioral loops are not abstract. They have a sequence, a trigger, and a cost. PsyRule names the four loops it sees most often — and tells you which ones are yours.</p>
+    </div>
+    <div class="pattern-grid">
+      <div class="pattern-card">
+        <div class="pattern-card-num">01</div>
+        <div class="pattern-card-title">Revenge loop</div>
+        <div class="pattern-card-seq">
+          <span>First loss</span>
+          <span class="pcs-arrow">→</span>
+          <span>shorter wait</span>
+          <span class="pcs-arrow">→</span>
+          <span>larger size</span>
+          <span class="pcs-arrow">→</span>
+          <span class="pcs-end">second loss</span>
+        </div>
+        <div class="pattern-card-line"></div>
+        <p class="pattern-card-body">A losing trade compresses your re-entry time and inflates your sizing. The second trade is rarely the recovery you imagined.</p>
+        <div class="pattern-card-cost"><span class="pcc-label">Modeled cost</span><span class="pcc-amt">~$312</span><span class="pcc-unit">avg per detected event</span></div>
+      </div>
+      <div class="pattern-card">
+        <div class="pattern-card-num">02</div>
+        <div class="pattern-card-title">Green-day giveback</div>
+        <div class="pattern-card-seq">
+          <span>Early profit</span>
+          <span class="pcs-arrow">→</span>
+          <span>overconfidence</span>
+          <span class="pcs-arrow">→</span>
+          <span>extra trades</span>
+          <span class="pcs-arrow">→</span>
+          <span class="pcs-end">profit gone</span>
+        </div>
+        <div class="pattern-card-line"></div>
+        <p class="pattern-card-body">A winning open lowers your selection bar. You take setups you would have skipped on a flat day, and the day's gain quietly disappears.</p>
+        <div class="pattern-card-cost"><span class="pcc-label">Modeled cost</span><span class="pcc-amt">~$184</span><span class="pcc-unit">avg giveback per green day</span></div>
+      </div>
+      <div class="pattern-card">
+        <div class="pattern-card-num">03</div>
+        <div class="pattern-card-title">Late-session decay</div>
+        <div class="pattern-card-seq">
+          <span>Focus drops</span>
+          <span class="pcs-arrow">→</span>
+          <span>weaker setups</span>
+          <span class="pcs-arrow">→</span>
+          <span class="pcs-end">emotional trades</span>
+        </div>
+        <div class="pattern-card-line"></div>
+        <p class="pattern-card-body">Past a personal cutoff your win rate drops sharply, but the trades keep coming. The decay is in attention, not in the market.</p>
+        <div class="pattern-card-cost"><span class="pcc-label">Modeled cost</span><span class="pcc-amt">~$96</span><span class="pcc-unit">avg loss per late-window trade</span></div>
+      </div>
+      <div class="pattern-card">
+        <div class="pattern-card-num">04</div>
+        <div class="pattern-card-title">Challenge pressure</div>
+        <div class="pattern-card-seq">
+          <span>Near target</span>
+          <span class="pcs-arrow">→</span>
+          <span>fear of giving back</span>
+          <span class="pcs-arrow">→</span>
+          <span class="pcs-end">forced setups</span>
+        </div>
+        <div class="pattern-card-line"></div>
+        <p class="pattern-card-body">Within reach of the target, every setup looks like the one that closes it out. The forcing is what ends most challenges.</p>
+        <div class="pattern-card-cost"><span class="pcc-label">Modeled cost</span><span class="pcc-amt">~$2,000</span><span class="pcc-unit">a blown challenge fee, on average</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPETITIVE GAP MAP -->
+<div class="gap-section fade" id="gap">
+  <div class="gap-inner">
+    <div class="section-tag"><span class="ch">02</span>Competitive gap</div>
+    <h2>Every other tool logs<br>what happened.<br><em>PsyRule explains why.</em></h2>
+    <p class="gap-sub">Trading journals show the trade. Rule blockers stop the action. PsyRule connects mood, pressure, timing, and rule-breaking into one behavioral profile. <strong style="color:var(--ink);font-weight:500">Click any row</strong> to see why it matters.</p>
+    <div class="gap-filters">
+      <span class="gap-filter-lbl">Filter</span>
+      <button class="gap-chip on" data-filter="all">All<span class="gap-chip-count">11</span></button>
+      <button class="gap-chip" data-filter="behavioral">Behavioral<span class="gap-chip-count">6</span></button>
+      <button class="gap-chip" data-filter="only">Only PsyRule<span class="gap-chip-count">5</span></button>
+      <button class="gap-chip" data-filter="sync">Auto-sync &amp; rules<span class="gap-chip-count">3</span></button>
+    </div>
+    <div class="gap-table-wrap">
+      <table class="gap-table">
+        <thead>
+          <tr>
+            <th class="feature-col">Capability</th>
+            <th><a class="gap-competitor-link" href="https://app.tradeguard.co/" target="_blank" rel="noopener noreferrer">TradeGuard</a></th>
+            <th>Edgewonk</th>
+            <th>Tradezella</th>
+            <th>Tradis</th>
+            <th class="our our-head">PsyRule <span class="our-badge">you</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-tags="behavioral">
+            <td class="feature-col">Pre-session behavioral check-in</td>
+            <td class="no">✕</td><td class="no">✕</td><td class="no">✕</td>
+            <td class="partial">checklist only</td>
+            <td class="our-col yes">✓</td>
+          </tr>
+          <tr class="gap-row-why"><td colspan="6"><div class="gap-row-why-inner"><strong>Why it matters:</strong> The decisions that blow up a session are made <em>before</em> it starts. Sleep, focus, plan — these inputs predict your sizing more than anything that happens on the chart.</div></td></tr>
+
+          <tr data-tags="sync">
+            <td class="feature-col">Automatic trade sync (MT4/MT5/cTrader)</td>
+            <td class="yes">✓</td><td class="partial">CSV only</td><td class="yes">✓</td><td class="no">✕</td>
+            <td class="our-col yes">✓</td>
+          </tr>
+          <tr class="gap-row-why"><td colspan="6"><div class="gap-row-why-inner"><strong>Why it matters:</strong> Manual logging is where journaling dies. If sync isn't real-time, you only review behavior after damage is done — never during.</div></td></tr>
+
+          <tr data-tags="behavioral only">
+            <td class="feature-col">Personal danger-zone alerts</td>
+            <td class="no">✕</td><td class="no">✕</td><td class="no">✕</td>
+            <td class="partial">lot calc only</td>
+            <td class="our-col yes">✓</td>
+          </tr>
+          <tr class="gap-row-why"><td colspan="6"><div class="gap-row-why-inner"><strong>Why it matters:</strong> Most blowups aren't one bad trade — they're three open positions that <em>together</em> exceed the limit. A per-trade calculator can't see this.</div></td></tr>
+
+          <tr data-tags="behavioral only">
+            <td class="feature-col">Mental state → session outcome correlation</td>
+            <td class="no">✕</td><td class="no">✕</td><td class="no">✕</td><td class="no">✕</td>
+            <td class="our-col yes">✓</td>
+          </tr>
+          <tr class="gap-row-why"><td colspan="6"><div class="gap-row-why-inner"><strong>Why it matters:</strong> "I traded worse when tired" is a hunch. Connecting mood, sleep, and pressure to actual session outcomes turns the hunch into a rule you'll follow.</div></td></tr>
+
+          <tr data-tags="behavioral">
+            <td class="feature-col">Behavioral pattern detection (trader-specific)</td>
+            <td class="no">✕</td><td class="no">✕</td>
+            <td class="partial">basic stats</td>
+            <td class="partial">generic coaching</td>
+            <td class="our-col yes">✓</td>
+          </tr>
+          <tr class="gap-row-why"><td colspan="6"><div class="gap-row-why-inner"><strong>Why it matters:</strong> Generic advice ("size down after a loss") is easy to ignore. A pattern named with your data — your trigger, your sequence, your historical cost — is harder to.</div></td></tr>
+
+          <tr data-tags="sync">
+            <td class="feature-col">Prop firm challenge rule tracking</td>
+            <td class="no">✕</td><td class="no">✕</td>
+            <td class="partial">manual setup</td>
+            <td class="yes">✓</td>
+            <td class="our-col yes">✓</td>
+          </tr>
+          <tr class="gap-row-why"><td colspan="6"><div class="gap-row-why-inner"><strong>Why it matters:</strong> Each prop firm has different daily/total/lot rules. Tracking these by hand is the first thing traders skip when stressed.</div></td></tr>
+
+          <tr data-tags="behavioral">
+            <td class="feature-col">Revenge-trading sequence detection</td>
+            <td class="no">✕</td><td class="no">✕</td><td class="no">✕</td>
+            <td class="partial">timer only</td>
+            <td class="our-col yes">✓</td>
+          </tr>
+          <tr class="gap-row-why"><td colspan="6"><div class="gap-row-why-inner"><strong>Why it matters:</strong> A passive timer doesn't break the loop. Surfacing the trade's behavioral context — "this matches your revenge-trading pattern from 6 prior sessions" — at the moment of placement does.</div></td></tr>
+
+          <tr data-tags="behavioral">
+            <td class="feature-col">Weekly personalized behavioral report</td>
+            <td class="no">✕</td><td class="no">✕</td><td class="no">✕</td>
+            <td class="partial">generic AI</td>
+            <td class="our-col yes">✓</td>
+          </tr>
+          <tr class="gap-row-why"><td colspan="6"><div class="gap-row-why-inner"><strong>Why it matters:</strong> Once a week your specific failure conditions, named with dollar costs. Not "improve discipline" — "stop trading after 16:00, that's costing $480/week".</div></td></tr>
+
+          <tr data-tags="only sync">
+            <td class="feature-col">Session rule lock-in</td>
+            <td class="no">✕</td><td class="no">✕</td><td class="no">✕</td><td class="no">✕</td>
+            <td class="our-col yes">✓</td>
+          </tr>
+          <tr class="gap-row-why"><td colspan="6"><div class="gap-row-why-inner"><strong>Why it matters:</strong> Soft-blocks fail because mid-session you talk yourself out of them. A 60-second cooldown + logged reason is enough friction to break the impulse.</div></td></tr>
+
+          <tr data-tags="only">
+            <td class="feature-col">Proximity warnings ("92% of limit") vs raw numbers</td>
+            <td class="no">✕</td><td class="no">✕</td><td class="no">✕</td><td class="no">✕</td>
+            <td class="our-col yes">✓</td>
+          </tr>
+          <tr class="gap-row-why"><td colspan="6"><div class="gap-row-why-inner"><strong>Why it matters:</strong> "$460 of $500" is a number. "92% of your limit" triggers loss aversion. Same data, completely different behavior.</div></td></tr>
+
+          <tr data-tags="only">
+            <td class="feature-col">Behavioral cost tracker</td>
+            <td class="no">✕</td><td class="no">✕</td><td class="no">✕</td><td class="no">✕</td>
+            <td class="our-col yes">✓</td>
+          </tr>
+          <tr class="gap-row-why"><td colspan="6"><div class="gap-row-why-inner"><strong>Why it matters:</strong> Discipline is invisible — you only see the losses you took, not the recurring patterns behind them. PsyRule names the cost of each behavioral loop so you can decide which one to fix first.</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="gap-note">* Competitive data based on public feature listings as of May 2026.</p>
+  </div>
+</div>
+
+<!-- SCRUBBABLE TIMELINE -->
+<div class="timeline-section fade" id="how">
+  <div class="timeline-head">
+      <div>
+        <div class="section-tag"><span class="ch">03</span>One real session</div>
+        <h2>The behavioral loop,<br><em>frame by frame.</em></h2>
+      </div>
+    <p class="feat-p">Drag the handle through one funded trader's session. Each event shows the behavioral state PsyRule was reading — not just the trade. The point is the sequence, not the P&amp;L.</p>
+  </div>
+
+  <div class="timeline-stage">
+    <!-- Trader's day card (left) -->
+    <div class="day-card">
+      <div class="day-card-head">
+        <div class="day-card-name">Trader log · April 18</div>
+        <div class="day-card-time" id="tl-time">06:00</div>
+      </div>
+      <div class="day-event-title" id="tl-title">Pre-market — coffee, no plan written yet.</div>
+      <div class="day-event-body" id="tl-body">An hour before London open. Slept 5 hours. No journal entry, no risk ceiling set. This is when the rest of the day quietly gets decided.</div>
+
+      <div class="day-stats">
+        <div class="day-stat">
+          <div class="day-stat-l">Trades today</div>
+          <div class="day-stat-v" id="tl-trades">0</div>
+        </div>
+        <div class="day-stat">
+          <div class="day-stat-l">Realized P&amp;L</div>
+          <div class="day-stat-v" id="tl-realized">$0</div>
+        </div>
+        <div class="day-stat">
+          <div class="day-stat-l">Mental state</div>
+          <div class="day-stat-v" id="tl-mental">Tired · 4/10</div>
+        </div>
+        <div class="day-stat">
+          <div class="day-stat-l">Behavioral cost</div>
+          <div class="day-stat-v red" id="tl-without">−$0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PsyRule panel (right) -->
+    <div class="tl-card">
+      <div class="tl-card-head">
+        <div class="tl-card-name">psyrule · live</div>
+        <div class="tl-card-state idle" id="tl-state">Idle</div>
+      </div>
+
+      <div class="tl-pnl-area">
+        <div class="tl-pnl-row">
+          <div class="tl-pnl-num" id="tl-pnl">$0</div>
+          <div class="tl-pnl-cap" id="tl-pnl-cap">No session yet</div>
+        </div>
+      </div>
+
+      <div class="tl-bar-row">
+        <div class="tl-bar-l"><span>Daily loss proximity</span><span id="tl-loss-pct">0%</span></div>
+        <div class="tl-bar"><div class="tl-bar-fill green" id="tl-loss-bar" style="width:0%"></div></div>
+      </div>
+
+      <div class="tl-bar-row">
+        <div class="tl-bar-l"><span>Open exposure</span><span id="tl-exp-pct">0%</span></div>
+        <div class="tl-bar"><div class="tl-bar-fill green" id="tl-exp-bar" style="width:0%"></div></div>
+      </div>
+
+      <div class="tl-msg" id="tl-msg">
+        <div class="tl-msg-pre">Status</div>
+        Waiting for pre-session check-in.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scrubber -->
+  <div class="scrubber-wrap">
+    <div class="scrubber-times">
+      <span>06:00</span><span>09:00</span><span>11:00</span><span>13:00</span><span>15:00</span><span>17:00</span><span>19:00</span>
+    </div>
+    <div class="scrubber-track" id="scrubber-track">
+      <div class="scrubber-zones">
+        <div class="scrubber-zone zone-pre" style="width:23%"></div>
+        <div class="scrubber-zone zone-active" style="width:30%"></div>
+        <div class="scrubber-zone zone-warn" style="width:20%"></div>
+        <div class="scrubber-zone zone-late" style="width:27%"></div>
+      </div>
+      <div class="scrubber-events" id="scrubber-events"></div>
+      <div class="scrubber-handle" id="scrubber-handle" style="left:0%"></div>
+    </div>
+    <div class="scrubber-controls">
+      <div class="scrubber-current">
+        <button class="scrubber-play" id="scrubber-play" aria-label="Play">
+          <svg viewBox="0 0 16 16"><path d="M4 2L13 8L4 14V2Z"/></svg>
+        </button>
+        <span><strong id="scrub-event-name">Pre-market</strong> · <span id="scrub-event-detail">no plan written</span></span>
+      </div>
+      <div class="scrubber-hint">Drag the handle, click an event, or press play</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS — 5 STEPS -->
+<div class="how-section fade" id="how-it-works">
+  <div class="how-inner">
+    <div class="how-head">
+      <div class="section-tag"><span class="ch">04</span>How it works</div>
+      <h2>Check in. Detect.<br><em>Interrupt the loop.</em></h2>
+      <p class="gap-sub" style="max-width:580px;">Five steps that turn a session into a feedback loop. Not a hard block — a behavioral risk layer that gets more accurate the longer you use it.</p>
+    </div>
+
+    <div class="how-flow">
+      <div class="how-flow-line"></div>
+
+      <div class="how-step">
+        <div class="how-step-num">01</div>
+        <div class="how-step-card">
+          <div class="how-step-tag">Check in before trading</div>
+          <h3 class="how-step-title">Two minutes <em>before</em> the session.</h3>
+          <p class="how-step-body">Log mood, confidence, fatigue, and risk temptation before the session starts. The inputs that change your sizing — recorded while you're thinking clearly.</p>
+        </div>
+      </div>
+
+      <div class="how-step">
+        <div class="how-step-num">02</div>
+        <div class="how-step-card">
+          <div class="how-step-tag">Trade with rules visible</div>
+          <h3 class="how-step-title">Your limits stay <em>in view</em> as pressure builds.</h3>
+          <p class="how-step-body">Personal limits, challenge rules, and risk thresholds are anchored on screen. Once the session starts, they lock in — bypass requires a 60-second cooldown and a logged reason.</p>
+        </div>
+      </div>
+
+      <div class="how-step">
+        <div class="how-step-num">03</div>
+        <div class="how-step-card">
+          <div class="how-step-tag">Detect behavior shifts</div>
+          <h3 class="how-step-title">PsyRule watches for the <em>discipline leaks</em>.</h3>
+          <p class="how-step-body">Faster re-entry after a loss, size increases after a stop-out, overtrading after profit. Each leak is matched against your own historical pattern — not a generic threshold.</p>
+        </div>
+      </div>
+
+      <div class="how-step">
+        <div class="how-step-num">04</div>
+        <div class="how-step-card">
+          <div class="how-step-tag">Interrupt the loop</div>
+          <h3 class="how-step-title"><em>Friction</em>, not blocking.</h3>
+          <p class="how-step-body">Cooldowns, confirmations, and warnings tied to your personal history. PsyRule does not stop the trade — it surfaces what the trade has cost you the last time the same loop ran.</p>
+        </div>
+      </div>
+
+      <div class="how-step">
+        <div class="how-step-num">05</div>
+        <div class="how-step-card">
+          <div class="how-step-tag">Review the pattern</div>
+          <h3 class="how-step-title">After the session, <em>see the sequence.</em></h3>
+          <p class="how-step-body">What happened, why it happened, and which rule would reduce the same mistake next time. Patterns become rules. Rules become a discipline profile.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="how-loop">
+      <span>Check in</span><span class="hl-arrow">→</span>
+      <span>Trade</span><span class="hl-arrow">→</span>
+      <span>Detect</span><span class="hl-arrow">→</span>
+      <span>Intervene</span><span class="hl-arrow">→</span>
+      <span>Review</span><span class="hl-arrow">→</span>
+      <span class="hl-out">Improve</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIORAL COST CARD -->
+<div class="bcost-section fade">
+  <div class="bcost-inner">
+    <div class="section-tag"><span class="ch">05</span>What it's costing you</div>
+    <div class="bcost-grid">
+      <div class="bcost-copy">
+        <h2>How much is this<br>actually <em id="bcalc-headline-num">costing you</em>?</h2>
+        <p class="feat-p" style="margin-top:24px;">Most traders underestimate the cost of their behavioral patterns by 3–4x. They count the blown challenges, not the slow giveback. Plug in your numbers — see what one year of unmanaged tilt actually adds up to.</p>
+        <ul class="feat-list" style="margin-top:24px;">
+          <li><span class="fck">✓</span>Revenge-trading sequences detected automatically</li>
+          <li><span class="fck">✓</span>Overtrading windows priced against your own history</li>
+          <li><span class="fck">✓</span>Late-session decay — the hours that consistently lose</li>
+          <li><span class="fck">✓</span>Recurring patterns turned into specific rules</li>
+        </ul>
+      </div>
+      <div class="fc bcalc">
+        <div class="fc-head"><div class="fc-wdots"><span></span><span></span><span></span></div><span class="fc-name">tilt cost calculator · your numbers</span></div>
+        <div class="fc-body">
+          <div class="bcalc-input">
+            <div class="bcalc-row"><label class="bcalc-lbl" for="bcalc-loss">Avg loss per blown challenge</label><div class="bcalc-val">$<span id="bcalc-loss-out">600</span></div></div>
+            <input type="range" id="bcalc-loss" min="100" max="3000" step="50" value="600" class="bcalc-slider">
+            <div class="bcalc-scale"><span>$100</span><span>$3,000</span></div>
+          </div>
+          <div class="bcalc-input">
+            <div class="bcalc-row"><label class="bcalc-lbl" for="bcalc-blown">Challenges blown this year</label><div class="bcalc-val"><span id="bcalc-blown-out">4</span></div></div>
+            <input type="range" id="bcalc-blown" min="0" max="15" step="1" value="4" class="bcalc-slider">
+            <div class="bcalc-scale"><span>0</span><span>15</span></div>
+          </div>
+          <div class="bcalc-input">
+            <div class="bcalc-row"><label class="bcalc-lbl" for="bcalc-pct">% you'd trace to revenge / oversize</label><div class="bcalc-val"><span id="bcalc-pct-out">65</span>%</div></div>
+            <input type="range" id="bcalc-pct" min="0" max="100" step="5" value="65" class="bcalc-slider">
+            <div class="bcalc-scale"><span>0%</span><span>100%</span></div>
+          </div>
+          <div class="bcalc-output">
+            <div class="bcalc-out-lbl">Estimated behavioral cost · last 12 months</div>
+            <div class="bcalc-out-num">−$<span id="bcalc-total">1,560</span></div>
+            <div class="bcalc-out-sub"><span id="bcalc-savings">$1,221</span> recoverable if PsyRule cuts these patterns by 50% (industry-typical for behavioral interrupts).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SAMPLE WEEKLY REPORT -->
+<div class="report-section fade" id="weekly-report">
+  <div class="report-inner">
+    <div class="report-head">
+      <div class="section-tag"><span class="ch">06</span>Sample weekly report</div>
+      <h2>Every Sunday,<br>your week in <em>one page.</em></h2>
+      <p class="gap-sub" style="max-width:600px;">Not a generic dashboard — your specific failure conditions, named with dollar costs and one rule to try this week. Here's an actual report.</p>
+    </div>
+
+    <div class="report-card">
+      <div class="report-bar">
+        <div class="report-bar-l">
+          <div class="vdots"><span></span><span></span><span></span></div>
+          <span class="report-bar-name">PsyRule · weekly behavioral report</span>
+        </div>
+        <div class="report-bar-meta">Trader: <strong>you</strong> · FTMO 100k · sent Sunday 18:00</div>
+      </div>
+
+      <div class="report-body">
+        <!-- Hero summary -->
+        <div class="report-hero">
+          <div>
+            <div class="report-week">Week 17 · Apr 14 – Apr 20</div>
+            <div class="report-headline">You broke even on P&amp;L —<br>but <em>three rule breaks</em><br>did the damage.</div>
+          </div>
+          <div class="report-kpis">
+            <div class="report-kpi"><div class="report-kpi-l">Net P&amp;L</div><div class="report-kpi-v">+$84</div></div>
+            <div class="report-kpi"><div class="report-kpi-l">Behavioral cost</div><div class="report-kpi-v red">−$1,140</div></div>
+            <div class="report-kpi"><div class="report-kpi-l">Sessions</div><div class="report-kpi-v">9</div></div>
+            <div class="report-kpi"><div class="report-kpi-l">Rule breaks</div><div class="report-kpi-v red">3</div></div>
+          </div>
+        </div>
+
+        <!-- Cost by pattern -->
+        <div>
+          <div class="report-block-tag">Cost by pattern</div>
+          <h3 class="report-block-h">Where the money <em>actually</em> went.</h3>
+          <div class="report-pattern-list">
+            <div class="report-pattern">
+              <div class="report-pat-row"><strong>Revenge loop · Tue, Thu</strong><span class="report-pat-amt">−$624</span></div>
+              <div class="report-pat-bar"><div class="report-pat-fill" style="width:88%"></div></div>
+              <div class="report-pat-row"><span>2 events · re-entered within 6 min after stop-out</span></div>
+            </div>
+            <div class="report-pattern">
+              <div class="report-pat-row"><strong>Late-session decay</strong><span class="report-pat-amt">−$348</span></div>
+              <div class="report-pat-bar"><div class="report-pat-fill amber" style="width:54%"></div></div>
+              <div class="report-pat-row"><span>4 trades after 16:00 · win rate 25%</span></div>
+            </div>
+            <div class="report-pattern">
+              <div class="report-pat-row"><strong>Green-day giveback · Wed</strong><span class="report-pat-amt">−$168</span></div>
+              <div class="report-pat-bar"><div class="report-pat-fill gray" style="width:28%"></div></div>
+              <div class="report-pat-row"><span>+$240 by 11:00 → −$72 close · 3 unplanned trades</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hour heatmap -->
+        <div>
+          <div class="report-block-tag">When you traded well, when you didn't</div>
+          <h3 class="report-block-h">Your <em>edge window</em>: 09:00–13:00.</h3>
+          <div class="report-heatmap">
+            <div class="report-hm-h"></div>
+            <div class="report-hm-d">Mon</div><div class="report-hm-d">Tue</div><div class="report-hm-d">Wed</div><div class="report-hm-d">Thu</div><div class="report-hm-d">Fri</div><div class="report-hm-d">Sat</div><div class="report-hm-d">Sun</div>
+
+            <div class="report-hm-h">07</div>
+            <div class="report-hm-cell" data-v="0"></div><div class="report-hm-cell" data-v="0"></div><div class="report-hm-cell" data-v="0"></div><div class="report-hm-cell" data-v="0"></div><div class="report-hm-cell" data-v="0"></div><div class="report-hm-cell" data-v="0"></div><div class="report-hm-cell" data-v="0"></div>
+
+            <div class="report-hm-h">09</div>
+            <div class="report-hm-cell" data-v="3"></div><div class="report-hm-cell" data-v="2"></div><div class="report-hm-cell" data-v="4"></div><div class="report-hm-cell" data-v="3"></div><div class="report-hm-cell" data-v="2"></div><div class="report-hm-cell" data-v="0"></div><div class="report-hm-cell" data-v="0"></div>
+
+            <div class="report-hm-h">11</div>
+            <div class="report-hm-cell" data-v="2"></div><div class="report-hm-cell" data-v="-2"></div><div class="report-hm-cell" data-v="3"></div><div class="report-hm-cell" data-v="-3"></div><div class="report-hm-cell" data-v="2"></div><div class="report-hm-cell" data-v="0"></div><div class="report-hm-cell" data-v="0"></div>
+
+            <div class="report-hm-h">13</div>
+            <div class="report-hm-cell" data-v="1"></div><div class="report-hm-cell" data-v="1"></div><div class="report-hm-cell" data-v="2"></div><div class="report-hm-cell" data-v="-1"></div><div class="report-hm-cell" data-v="1"></div><div class="report-hm-cell" data-v="0"></div><div class="report-hm-cell" data-v="0"></div>
+
+            <div class="report-hm-h">15</div>
+            <div class="report-hm-cell" data-v="-1"></div><div class="report-hm-cell" data-v="-1"></div><div class="report-hm-cell" data-v="0"></div><div class="report-hm-cell" data-v="-2"></div><div class="report-hm-cell" data-v="-1"></div><div class="report-hm-cell" data-v="0"></div><div class="report-hm-cell" data-v="0"></div>
+
+            <div class="report-hm-h">17</div>
+            <div class="report-hm-cell" data-v="-2"></div><div class="report-hm-cell" data-v="-2"></div><div class="report-hm-cell" data-v="-1"></div><div class="report-hm-cell" data-v="-3"></div><div class="report-hm-cell" data-v="-2"></div><div class="report-hm-cell" data-v="0"></div><div class="report-hm-cell" data-v="0"></div>
+          </div>
+          <div class="report-hm-legend">
+            <span>Loss</span>
+            <div class="report-hm-legend-bar">
+              <span style="background:#8b1a1a"></span><span style="background:#d88e7e"></span><span style="background:#f0d6cc"></span><span style="background:#efece5"></span><span style="background:#d8e4dc"></span><span style="background:#a6c4b4"></span><span style="background:#5c8a73"></span><span style="background:#1a5c3e"></span>
+            </div>
+            <span>Win</span>
+          </div>
+        </div>
+
+        <!-- Recommended rule -->
+        <div class="report-rule">
+          <div>
+            <div class="report-rule-tag">Recommended rule for week 18</div>
+            <div class="report-rule-h">Stop trading at 16:00 sharp.<br><em>Estimated saved: $480/wk.</em></div>
+            <div class="report-rule-sub">Your win rate drops from <strong>61%</strong> (08:00–14:00) to <strong>28%</strong> after 16:00. You traded past 16:00 on <strong>4 of 5 days</strong> last week — every one of those trades was a loser.</div>
+          </div>
+          <div class="report-rule-actions">
+            <button class="report-rule-btn">Add this rule</button>
+            <button class="report-rule-btn ghost">See alternatives</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUOTES -->
+<div class="quotes-bg">
+  <div class="quotes-inner fade">
+    <div class="q-header">
+      <div>
+        <div class="section-tag"><span class="ch">07</span>From traders</div>
+        <h2>Real feedback.<br>Real problems.</h2>
+      </div>
+      <p class="q-sub">Replies from r/PropFirms and r/Trading. PsyRule was built around what these traders said.</p>
+    </div>
+    <div class="q-grid" id="q-grid">
+      <div class="q-card" data-slot="0"><div class="q-progress"><div class="q-progress-fill"></div></div></div>
+      <div class="q-card" data-slot="1"><div class="q-progress"><div class="q-progress-fill"></div></div></div>
+      <div class="q-card" data-slot="2"><div class="q-progress"><div class="q-progress-fill"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div id="pricing">
+  <div class="pricing-section fade">
+    <div class="pricing-head">
+      <div class="section-tag center">Pricing</div>
+      <h2>Simple. No surprises.</h2>
+      <p>Founding member pricing is locked at signup — it never increases for you.</p>
+    </div>
+    <div class="p-grid">
+      <div class="p-card feat">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+          <div class="p-tier" style="margin:0;">Early access</div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;background:var(--green);color:#fff;padding:2px 9px;border-radius:4px;letter-spacing:.05em;text-transform:uppercase;">Founding</span>
+        </div>
+        <div class="p-price"><sup>$</sup>19<span>/mo</span></div>
+        <p class="p-desc">Locked forever at this rate.</p>
+        <p id="founding-counter" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);letter-spacing:.05em;text-transform:uppercase;margin:8px 0 16px;">Up to 100 founding spots</p>
+        <ul class="p-feats">
+          <li><span class="pck">✓</span>Pre-session check-in + session rule lock-in</li>
+          <li><span class="pck">✓</span>MT4 / MT5 EA auto-sync</li>
+          <li><span class="pck">✓</span>cTrader Open API sync</li>
+          <li><span class="pck">✓</span>Tilt risk score</li>
+          <li><span class="pck">✓</span>Pattern detection (revenge, overtrading, decay)</li>
+          <li><span class="pck">✓</span>Personal danger-zone alerts</li>
+          <li><span class="pck">✓</span>Behavioral cost tracker</li>
+          <li><span class="pck">✓</span>Personalized rule recommendations</li>
+          <li><span class="pck">✓</span>Weekly discipline report</li>
+          <li><span class="pck">✓</span>Unlimited prop firm profiles</li>
+          <li><span class="pck">✓</span>Direct input on the roadmap</li>
+        </ul>
+        <a href="/signup" class="p-btn feat" id="founding-cta" style="display:block;text-align:center;text-decoration:none;">Claim founding price</a>
+      </div>
+      <div class="p-card">
+        <div class="p-tier" style="margin-bottom:20px;">Regular</div>
+        <div class="p-price"><sup>$</sup>29<span>/mo</span></div>
+        <p class="p-desc">After founding tier closes.</p>
+        <ul class="p-feats">
+          <li><span class="pck">✓</span>Pre-session check-in + session rule lock-in</li>
+          <li><span class="pck">✓</span>MT4 / MT5 EA auto-sync</li>
+          <li><span class="pck">✓</span>cTrader Open API sync</li>
+          <li><span class="pck">✓</span>Tilt risk score</li>
+          <li><span class="pck">✓</span>Pattern detection (revenge, overtrading, decay)</li>
+          <li><span class="pck">✓</span>Personal danger-zone alerts</li>
+          <li><span class="pck">✓</span>Behavioral cost tracker</li>
+          <li><span class="pck">✓</span>Personalized rule recommendations</li>
+          <li><span class="pck">✓</span>Weekly discipline report</li>
+          <li><span class="pck">✓</span>Unlimited prop firm profiles</li>
+        </ul>
+        <a href="/signup" class="p-btn" style="display:block;text-align:center;text-decoration:none;">Sign up</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- FINAL CTA -->
+<div class="final fade">
+  <div class="final-inner">
+    <div class="section-tag center dark">Stop the loop before it costs another challenge</div>
+    <h2>Stop repeating<br>the same mistake<br>without seeing<br>the <em>pattern.</em></h2>
+    <p>Build a discipline profile from your real sessions, detect your highest-risk behavioral loops, and turn them into rules before they cost another challenge.</p>
+    <a href="/signup" class="btn-p" style="display:inline-block;text-decoration:none;">Build my discipline profile</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="border-top:1px solid var(--border)">
+<footer>
+  <div class="foot-logo">
+    <div class="foot-mark"><svg viewBox="0 0 16 16" fill="none"><path d="M 12.33 5.5 A 5 5 0 1 0 12.33 10.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><path d="M 13.2 5 L 10.6 11" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+    <span>Psy<em style="font-style:italic;color:var(--green);font-family:'Fraunces',serif;font-weight:700;margin-left:-1px;">Rule</em></span>
+  </div>
+  <div class="foot-links">
+    <a href="#how" class="foot-link">How it works</a>
+    <a href="#gap" class="foot-link">Compare</a>
+    <a href="#pricing" class="foot-link">Pricing</a>
+  </div>
+  <div class="foot-note">© 2026 PsyRule</div>
+</footer>
+</div>
+
+<script>
+const io = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('up'); }), { threshold: 0.07 });
+document.querySelectorAll('.fade').forEach(el => io.observe(el));
+
+/* Quote rotator — 9 quotes streaming through 3 slots, staggered */
+(function () {
+  const grid = document.getElementById('q-grid');
+  if (!grid) return;
+  const quotes = [
+    { text: 'The main reason traders fail isn\'t the rules — it\'s <strong>behavior change under pressure.</strong> Pre-trade awareness is what actually keeps me under limits. Not staring at the equity curve. Not willpower.', src: 'r/PropFirms · currently using a spreadsheet' },
+    { text: 'This actually solves a real problem — but it will <strong>only work for traders who already accept they have a discipline issue.</strong> For those traders, it can actually make a difference.', src: 'r/Forex · Top 1% Commenter' },
+    { text: 'Showing proximity to a limit — like <strong>"92% of Daily Loss Reached"</strong> — is more effective than a hard stop. It triggers loss aversion before the panic sets in.', src: 'r/Forex' },
+    { text: 'I\'ve failed three FTMO challenges. Every time I knew exactly what I did wrong by the third trade. <strong>The problem isn\'t knowing — it\'s having something interrupt you in the moment.</strong>', src: 'r/PropFirms · failed 3x' },
+    { text: 'Most journaling tools assume you\'re going to sit down and do an honest review on Sunday. <strong>I never did.</strong> Something that puts the pattern in front of me automatically is the only thing that\'ll work.', src: 'r/Trading' },
+    { text: 'The honest truth: I size up after winners and revenge-trade after losers. I know this. <strong>Knowing has not been enough.</strong> If a tool can name it with a dollar figure I\'ll listen.', src: 'r/Daytrading · 4 yrs trading' },
+    { text: 'Hard blocks fail because mid-session you find a way around them. <strong>A 60-second cooldown that makes me type why I\'m breaking my own rule</strong> is genuinely a different mechanism. That could work.', src: 'r/PropFirms · MFF passed' },
+    { text: 'The "estimated losses avoided" idea is the smartest thing I\'ve seen in this space. <strong>Right now discipline is invisible — you only see the losses you took.</strong> Making the saves countable is huge.', src: 'r/Forex · funded' },
+    { text: 'I\'d pay for this if it just told me what time of day I should stop trading. My win rate after 4pm is a horror show and I do it anyway. <strong>I need a tool, not advice.</strong>', src: 'r/Daytrading' }
+  ];
+
+  const slots = grid.querySelectorAll('.q-card');
+  const ROTATE_MS = 5200;          // total time per quote
+  const STAGGER_MS = 1700;         // delay between slots starting
+  const FADE_MS = 550;
+  const indices = [0, 1, 2];       // current quote per slot
+  const slides = [[], [], []];     // active slide elements per slot
+
+  function buildSlide(q) {
+    const slide = document.createElement('div');
+    slide.className = 'q-slide';
+    slide.innerHTML = '<div><div class="q-mark">"</div><p class="q-text">' + q.text + '</p></div>'
+                    + '<div class="q-source">' + q.src + '</div>';
+    return slide;
+  }
+
+  // Init each slot with first quote
+  slots.forEach((slot, i) => {
+    const slide = buildSlide(quotes[indices[i]]);
+    slot.appendChild(slide);
+    requestAnimationFrame(() => slide.classList.add('on'));
+    slides[i].push(slide);
+  });
+
+  function advance(slotIdx) {
+    const slot = slots[slotIdx];
+    const fill = slot.querySelector('.q-progress-fill');
+    // Animate progress bar from 0 → 100% over ROTATE_MS
+    if (fill) {
+      fill.style.transition = 'none';
+      fill.style.width = '0%';
+      requestAnimationFrame(() => {
+        fill.style.transition = 'width ' + ROTATE_MS + 'ms linear';
+        fill.style.width = '100%';
+      });
+    }
+
+    setTimeout(() => {
+      // Pick a new quote not currently shown in any slot
+      const shown = indices.slice();
+      let next;
+      do { next = Math.floor(Math.random() * quotes.length); } while (shown.includes(next));
+      indices[slotIdx] = next;
+
+      // Sequenced fade: old out fully, then new in
+      const oldSlide = slides[slotIdx][slides[slotIdx].length - 1];
+      if (oldSlide) oldSlide.classList.remove('on');
+
+      setTimeout(() => {
+        if (oldSlide) oldSlide.remove();
+        const newSlide = buildSlide(quotes[next]);
+        slot.appendChild(newSlide);
+        requestAnimationFrame(() => newSlide.classList.add('on'));
+        slides[slotIdx] = [newSlide];
+        advance(slotIdx);
+      }, FADE_MS + 30);
+    }, ROTATE_MS);
+  }
+
+  // Start each slot's loop with stagger
+  slots.forEach((_, i) => setTimeout(() => advance(i), STAGGER_MS * (i + 1)));
+})();
+
+(function () {
+  const chips = document.querySelectorAll('.gap-chip');
+  const rows = document.querySelectorAll('.gap-table tbody tr:not(.gap-row-why)');
+  const whyRows = document.querySelectorAll('.gap-table tbody tr.gap-row-why');
+
+  // Filter chips
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('on'));
+      chip.classList.add('on');
+      const f = chip.dataset.filter;
+      rows.forEach((row, i) => {
+        const tags = (row.dataset.tags || '').split(' ');
+        const show = f === 'all' || tags.includes(f);
+        row.classList.toggle('hidden', !show);
+        // Collapse hidden rows' expansions
+        if (!show) {
+          row.classList.remove('expanded');
+          if (whyRows[i]) whyRows[i].classList.add('hidden');
+        } else if (whyRows[i]) {
+          whyRows[i].classList.toggle('hidden', !row.classList.contains('expanded'));
+        }
+      });
+    });
+  });
+
+  // Click row to expand "why it matters"
+  rows.forEach((row, i) => {
+    const featCell = row.querySelector('.feature-col');
+    if (!featCell) return;
+    featCell.addEventListener('click', () => {
+      row.classList.toggle('expanded');
+    });
+  });
+})();
+
+/* =================================================================
+   LIVE HERO ARTIFACT — scripted session that ticks in real time
+   Loop: 30 seconds. Bars breathe, trades stream in, alerts fire.
+   ================================================================= */
+(function () {
+  const pnlMiniEl = document.getElementById('live-pnl-mini');
+  const expBar    = document.getElementById('live-exp-bar');
+  const expVal    = document.getElementById('live-exp-val');
+  const lossBar   = document.getElementById('live-loss-bar');
+  const lossVal   = document.getElementById('live-loss-val');
+  const alertsEl  = document.getElementById('live-alerts');
+  const clockEl   = document.getElementById('live-clock');
+  const progEl    = document.getElementById('live-scrub-prog');
+  const progTime  = document.getElementById('live-scrub-time');
+
+  if (!alertsEl) return;
+
+  // Scripted timeline. Right-side behavioral feed cycles through observations.
+  const beats = [
+    { t: 0,   pnl: 218,  exp: 30,  loss: 18, clock: '09:14:02', alert: { kind: 'good', icon: '✓', txt: 'Pre-session check-in complete · plan written · 1.5% ceiling' } },
+    { t: 3,   pnl: 156,  exp: 35,  loss: 28, clock: '10:18:44', alert: { kind: 'info', icon: '◇', txt: 'Re-entry time after last loss: 4 min · usual 12 min' } },
+    { t: 6,   pnl: 78,   exp: 60,  loss: 38, clock: '10:46:11', alert: { kind: 'warn', icon: '⚠', txt: 'First loss before 10:30 — historical trigger pattern' } },
+    { t: 9,   pnl: 78,   exp: 70,  loss: 52, clock: '10:54:30', alert: { kind: 'warn', icon: '⚠', txt: 'Position size +35% above plan after losing trade' } },
+    { t: 12,  pnl: 78,   exp: 70,  loss: 52, clock: '11:02:21', alert: { kind: 'crit', icon: '●', txt: 'Revenge-trading loop active · pattern matched 6 prior sessions' } },
+    { t: 15,  pnl: 78,   exp: 70,  loss: 52, clock: '11:04:08', alert: { kind: 'info', icon: '◇', txt: 'Recommended for next week’s report: 10-min cooldown after stop-out' } },
+    { t: 18,  pnl: 142,  exp: 60,  loss: 48, clock: '11:24:55', alert: { kind: 'info', icon: '◇', txt: 'Daily loss usage: 48% of $5,000 ceiling · within plan' } },
+    { t: 22,  pnl: 286,  exp: 50,  loss: 38, clock: '11:38:12', alert: { kind: 'info', icon: '◇', txt: 'Lifetime cost of revenge-loop pattern: −$1,240 across 6 sessions' } },
+    { t: 26,  pnl: 286,  exp: 28,  loss: 28, clock: '11:55:30', alert: { kind: 'info', icon: '◇', txt: 'Late-session decay starts at 16:00 · win rate drops to 28%' } }
+  ];
+
+  const fmt = n => (n >= 0 ? '+' : '−') + '$' + Math.abs(n).toLocaleString();
+
+  // Pre-seed alert
+  function pushAlert(a) {
+    const div = document.createElement('div');
+    div.className = 'lp-alert ' + a.kind;
+    div.innerHTML = '<span class="ai">' + a.icon + '</span><span>' + a.txt + '</span>';
+    alertsEl.insertBefore(div, alertsEl.firstChild);
+    while (alertsEl.children.length > 4) alertsEl.removeChild(alertsEl.lastChild);
+  }
+  pushAlert({ kind: 'info', icon: '◇', txt: 'Pre-session: focus 7/10, sleep 5h, plan written ✓' });
+
+  function applyBeat(beat) {
+    // Mini P&L
+    if (pnlMiniEl) pnlMiniEl.textContent = fmt(beat.pnl);
+
+    // Exposure
+    expBar.style.width = beat.exp + '%';
+    expVal.textContent = beat.exp + '%';
+    const expCls = beat.exp >= 90 ? 'red' : beat.exp >= 70 ? 'amber' : 'green';
+    expBar.className = 'lp-fill ' + expCls;
+
+    // Loss proximity
+    lossBar.style.width = beat.loss + '%';
+    lossVal.textContent = beat.loss + '%';
+    const lossCls = beat.loss >= 75 ? 'red' : beat.loss >= 50 ? 'amber' : 'green';
+    lossBar.className = 'lp-fill ' + lossCls;
+
+    // Clock
+    if (beat.clock) clockEl.textContent = beat.clock;
+
+    // Alert
+    if (beat.alert) pushAlert(beat.alert);
+  }
+
+  // Drive the loop
+  const LOOP = 30; // seconds
+  let startT = performance.now() / 1000;
+  let lastBeat = -1;
+
+  function tick() {
+    const now = performance.now() / 1000;
+    const elapsed = (now - startT) % LOOP;
+
+    // Find the latest beat whose t <= elapsed
+    let idx = 0;
+    for (let i = 0; i < beats.length; i++) if (beats[i].t <= elapsed) idx = i;
+
+    if (idx !== lastBeat) {
+      applyBeat(beats[idx]);
+      lastBeat = idx;
+    }
+
+    // Reset on loop wrap
+    if (elapsed < 0.1 && lastBeat > 0) {
+      alertsEl.innerHTML = '';
+      pushAlert({ kind: 'info', icon: '◇', txt: 'Pre-session: focus 7/10, sleep 5h, plan written ✓' });
+      lastBeat = -1;
+    }
+
+    // Progress bar
+    progEl.style.width = (elapsed / LOOP * 100) + '%';
+    const mm = Math.floor(elapsed / 60);
+    const ss = Math.floor(elapsed % 60);
+    progTime.textContent = String(mm).padStart(2,'0') + ':' + String(ss).padStart(2,'0');
+
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+/* =================================================================
+   SCRUBBABLE SESSION TIMELINE
+   ================================================================= */
+(function () {
+  const track   = document.getElementById('scrubber-track');
+  const handle  = document.getElementById('scrubber-handle');
+  const eventsEl= document.getElementById('scrubber-events');
+  const playBtn = document.getElementById('scrubber-play');
+  if (!track) return;
+
+  // Events along a 13-hour day (06:00 → 19:00)
+  const DAY_START = 6, DAY_END = 19;
+  const dayMin = (h, m) => ((h + m/60) - DAY_START) / (DAY_END - DAY_START) * 100;
+
+  const events = [
+    {
+      pos: dayMin(6, 0),  type: 'good',  num: '1',
+      time: '06:00', tip: '06:00 · Pre-market',
+      name: 'Pre-market',  detail: 'no plan written',
+      title: 'Pre-market — coffee, no plan written yet.',
+      body: 'An hour before London open. Slept 5 hours. No journal entry, no risk ceiling set. This is when the rest of the day quietly gets decided.',
+      trades: 0, realized: 0, mental: 'Tired · 4/10', without: 0,
+      state: { label: 'Idle', cls: 'idle', pnl: 0, pnlCap: 'No session yet', loss: 0, exp: 0, msg: 'Waiting for pre-session check-in.', msgPre: 'Status', msgCls: '' }
+    },
+    {
+      pos: dayMin(7, 30), type: 'good',  num: '2',
+      time: '07:30', tip: '07:30 · Pre-session check-in',
+      name: 'Pre-session', detail: 'plan written, 1.5% ceiling',
+      title: 'Two minutes that <em>change the day.</em>',
+      body: 'Mood, sleep, focus logged. Plan written. Risk ceiling fixed at <strong>1.5% per trade</strong>. Once the session starts, these rules can\'t be moved without a 60-second cooldown and a logged reason.',
+      trades: 0, realized: 0, mental: 'Tired · 4/10', without: 0,
+      state: { label: 'Locked', cls: 'active', pnl: 0, pnlCap: 'Rules fixed', loss: 0, exp: 0, msg: 'Session locked. Risk ceiling 1.5% / trade · daily limit −$500.', msgPre: 'Pre-check complete', msgCls: 'good' }
+    },
+    {
+      pos: dayMin(9, 14), type: 'good',  num: '3',
+      time: '09:14', tip: '09:14 · First trade',
+      name: 'First trade', detail: 'EURUSD long · within plan',
+      title: 'First entry, <em>by the book.</em>',
+      body: 'EURUSD long, 0.5 lots. Stop and target match the written plan. Exposure 30% of max — well inside the lane.',
+      trades: 1, realized: 96, mental: 'Focused · 7/10', without: 96,
+      state: { label: 'Active', cls: 'active', pnl: 96, pnlCap: 'Within plan', loss: 0, exp: 30, msg: '✓ EURUSD +$96 · matches written plan · exposure 30%', msgPre: 'Trade synced from MT5', msgCls: 'good' }
+    },
+    {
+      pos: dayMin(10, 46),type: 'warn',  num: '4',
+      time: '10:46', tip: '10:46 · Stop-out',
+      name: 'Stop-out', detail: 'GBPUSD −$78',
+      title: 'A clean loss. <em>Now what?</em>',
+      body: 'GBPUSD stop-out. −$78. This is the moment your behavior changes. The next 18 minutes decide whether today is a controlled losing day or a blown one.',
+      trades: 3, realized: 18, mental: 'Tilted · 5/10', without: 18,
+      state: { label: 'Warn', cls: 'warn', pnl: 18, pnlCap: 'Down from peak', loss: 16, exp: 35, msg: 'Stop-out logged · −$78 · cooldown timer started (18 min)', msgPre: 'Behavioral flag', msgCls: 'warn' }
+    },
+    {
+      pos: dayMin(11, 2), type: 'crit',  num: '5',
+      time: '11:02', tip: '11:02 · Revenge attempt',
+      name: 'Revenge attempt', detail: 'oversize re-entry blocked',
+      title: 'You tried to <em>double up.</em>',
+      body: 'Re-entry attempt 16 minutes after the stop-out at <strong>2x normal size</strong>. Your last 22 revenge trades won 9% of the time. PsyRule surfaces this and adds a 60-second cooldown — you can still place it, but you have to log why.',
+      trades: 3, realized: 18, mental: 'Tilted · 5/10', without: -312,
+      state: { label: 'Block', cls: 'block', pnl: 18, pnlCap: 'Saved from chase', loss: 16, exp: 35, msg: '● Revenge pattern detected · 60s cooldown · log reason to override', msgPre: 'Critical · pattern match', msgCls: 'crit' }
+    },
+    {
+      pos: dayMin(11, 38),type: 'good',  num: '6',
+      time: '11:38', tip: '11:38 · Recovery',
+      name: 'Recovery', detail: 'XAUUSD long · plan-sized',
+      title: 'Back to <em>plan-sized</em> entries.',
+      body: 'After the cooldown, you took the next setup at the original size. XAUUSD long, +$144. The day is green again — and the chase trade that didn\'t happen would have cost an estimated $312.',
+      trades: 4, realized: 162, mental: 'Recovered · 7/10', without: -150,
+      state: { label: 'Active', cls: 'active', pnl: 162, pnlCap: 'Recovered', loss: 0, exp: 28, msg: '✓ XAUUSD +$144 · plan-sized · estimated chase trade avoided: $312', msgPre: 'Recovery', msgCls: 'good' }
+    },
+    {
+      pos: dayMin(16, 0), type: 'warn',  num: '7',
+      time: '16:00', tip: '16:00 · Late-session decay',
+      name: 'Late-session decay', detail: 'win rate drops to 28%',
+      title: 'Your <em>win rate</em> just halved.',
+      body: 'Win rate 08:00–14:00: <strong>61%</strong>. After 16:00: <strong>28%</strong>. You traded past 16:00 on 18 sessions this challenge. PsyRule nudges you to stop here.',
+      trades: 4, realized: 162, mental: 'Fatigued · 5/10', without: -150,
+      state: { label: 'Warn', cls: 'warn', pnl: 162, pnlCap: 'Stop here', loss: 0, exp: 0, msg: 'Late-session decay window · win rate drops 33pts after 16:00', msgPre: 'Time-of-day pattern', msgCls: 'warn' }
+    },
+    {
+      pos: dayMin(18, 30),type: 'good',  num: '8',
+      time: '18:30', tip: '18:30 · Session closed',
+      name: 'Session closed', detail: '+$162 · plan followed',
+      title: 'Closed green. <em>Plan followed.</em>',
+      body: 'Final P&L: +$162. Three days streak with no rule breaks. Estimated losses avoided this session: <strong>$312</strong>. The pattern report will tell you why this day worked.',
+      trades: 4, realized: 162, mental: 'Steady · 8/10', without: -150,
+      state: { label: 'Closed', cls: 'active', pnl: 162, pnlCap: 'Day closed', loss: 0, exp: 0, msg: '✓ Day closed · plan followed · estimated losses avoided: $312', msgPre: 'End of session', msgCls: 'good' }
+    }
+  ];
+
+  // Render event dots
+  events.forEach((ev, i) => {
+    const el = document.createElement('div');
+    el.className = 'scrubber-event event-' + ev.type;
+    el.style.left = ev.pos + '%';
+    el.dataset.idx = i;
+    el.innerHTML = ev.num + '<span class="scrubber-event-tip">' + ev.tip + '</span>';
+    el.addEventListener('click', e => { e.stopPropagation(); jumpTo(i); });
+    eventsEl.appendChild(el);
+  });
+
+  // DOM refs for the panels
+  const r = {
+    time: document.getElementById('tl-time'),
+    title: document.getElementById('tl-title'),
+    body: document.getElementById('tl-body'),
+    trades: document.getElementById('tl-trades'),
+    realized: document.getElementById('tl-realized'),
+    mental: document.getElementById('tl-mental'),
+    without: document.getElementById('tl-without'),
+    state: document.getElementById('tl-state'),
+    pnl: document.getElementById('tl-pnl'),
+    pnlCap: document.getElementById('tl-pnl-cap'),
+    lossBar: document.getElementById('tl-loss-bar'),
+    lossPct: document.getElementById('tl-loss-pct'),
+    expBar: document.getElementById('tl-exp-bar'),
+    expPct: document.getElementById('tl-exp-pct'),
+    msg: document.getElementById('tl-msg'),
+    name: document.getElementById('scrub-event-name'),
+    detail: document.getElementById('scrub-event-detail')
+  };
+
+  function fmtMoney(n) { return (n >= 0 ? '+' : '−') + '$' + Math.abs(n).toLocaleString(); }
+
+  function applyEvent(i) {
+    const ev = events[i];
+    r.time.textContent = ev.time;
+    r.title.innerHTML = ev.title;
+    r.body.innerHTML = ev.body;
+    r.trades.textContent = ev.trades;
+    r.realized.textContent = ev.realized === 0 ? '$0' : fmtMoney(ev.realized);
+    r.realized.className = 'day-stat-v ' + (ev.realized > 0 ? 'green' : ev.realized < 0 ? 'red' : '');
+    r.mental.textContent = ev.mental;
+    r.without.textContent = ev.without === 0 ? '$0' : fmtMoney(ev.without);
+    r.without.className = 'day-stat-v ' + (ev.without < 0 ? 'red' : ev.without > 0 ? 'green' : '');
+
+    const s = ev.state;
+    r.state.textContent = s.label;
+    r.state.className = 'tl-card-state ' + s.cls;
+    r.pnl.textContent = s.pnl === 0 ? '$0' : fmtMoney(s.pnl);
+    r.pnl.className = 'tl-pnl-num ' + (s.pnl > 0 ? 'green' : s.pnl < 0 ? 'red' : '');
+    r.pnlCap.textContent = s.pnlCap;
+
+    r.lossBar.style.width = s.loss + '%';
+    r.lossPct.textContent = s.loss + '%';
+    const lcls = s.loss >= 75 ? 'red' : s.loss >= 50 ? 'amber' : 'green';
+    r.lossBar.className = 'tl-bar-fill ' + lcls;
+
+    r.expBar.style.width = s.exp + '%';
+    r.expPct.textContent = s.exp + '%';
+    const ecls = s.exp >= 90 ? 'red' : s.exp >= 70 ? 'amber' : 'green';
+    r.expBar.className = 'tl-bar-fill ' + ecls;
+
+    r.msg.className = 'tl-msg ' + s.msgCls;
+    r.msg.innerHTML = '<div class="tl-msg-pre">' + s.msgPre + '</div>' + s.msg;
+
+    r.name.textContent = ev.name;
+    r.detail.textContent = ev.detail;
+
+    // Visual: highlight active dot
+    eventsEl.querySelectorAll('.scrubber-event').forEach((el, j) => {
+      el.classList.toggle('active', j === i);
+    });
+  }
+
+  let currentPos = 0;
+  function setHandlePos(pct) {
+    currentPos = Math.max(0, Math.min(100, pct));
+    handle.style.left = currentPos + '%';
+    // Find nearest event
+    let nearestIdx = 0, nearestDist = Infinity;
+    events.forEach((ev, i) => {
+      const d = Math.abs(ev.pos - currentPos);
+      if (d < nearestDist) { nearestDist = d; nearestIdx = i; }
+    });
+    applyEvent(nearestIdx);
+    return nearestIdx;
+  }
+
+  function jumpTo(i) {
+    isPlaying = false;
+    updatePlayIcon();
+    setHandlePos(events[i].pos);
+  }
+
+  // Drag + click on track
+  let dragging = false;
+  function trackPctFromEvent(e) {
+    const rect = track.getBoundingClientRect();
+    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    return (x / rect.width) * 100;
+  }
+  track.addEventListener('mousedown', e => {
+    dragging = true; isPlaying = false; updatePlayIcon();
+    setHandlePos(trackPctFromEvent(e));
+  });
+  window.addEventListener('mousemove', e => { if (dragging) setHandlePos(trackPctFromEvent(e)); });
+  window.addEventListener('mouseup', () => { dragging = false; });
+  track.addEventListener('touchstart', e => {
+    dragging = true; isPlaying = false; updatePlayIcon();
+    setHandlePos(trackPctFromEvent(e));
+  });
+  window.addEventListener('touchmove', e => { if (dragging) setHandlePos(trackPctFromEvent(e)); });
+  window.addEventListener('touchend', () => { dragging = false; });
+
+  // Auto-play through events
+  let isPlaying = false;
+  let playIdx = 0;
+  let playTimer = null;
+  function updatePlayIcon() {
+    playBtn.innerHTML = isPlaying
+      ? '<svg viewBox="0 0 16 16"><rect x="4" y="3" width="3" height="10"/><rect x="9" y="3" width="3" height="10"/></svg>'
+      : '<svg viewBox="0 0 16 16"><path d="M4 2L13 8L4 14V2Z"/></svg>';
+  }
+  function stepPlay() {
+    if (!isPlaying) return;
+    setHandlePos(events[playIdx].pos);
+    playIdx = (playIdx + 1) % events.length;
+    playTimer = setTimeout(stepPlay, 2200);
+  }
+  playBtn.addEventListener('click', () => {
+    isPlaying = !isPlaying;
+    updatePlayIcon();
+    if (isPlaying) {
+      // Start from current nearest, advance from next
+      let nearest = 0, dist = Infinity;
+      events.forEach((ev, i) => { const d = Math.abs(ev.pos - currentPos); if (d < dist) { dist = d; nearest = i; } });
+      playIdx = nearest;
+      stepPlay();
+    } else {
+      clearTimeout(playTimer);
+    }
+  });
+
+  // Init
+  setHandlePos(0);
+})();
+
+
+(function(){
+  const trigger = document.getElementById('signalTrigger');
+  const rule = document.getElementById('signalRule');
+  const status = document.getElementById('signalStatus');
+  if (!trigger || !rule || !status) return;
+  const loops = [
+    { trigger: 'First loss', rule: 'Cooldown' },
+    { trigger: 'Early profit', rule: 'Lock gains' },
+    { trigger: '3 fast trades', rule: 'Pause session' }
+  ];
+  let idx = 0;
+  function rotateSignal(){
+    status.textContent = 'Monitoring';
+    status.classList.remove('is-detected');
+    status.classList.add('is-monitoring');
+    trigger.classList.add('is-changing');
+    rule.classList.add('is-changing');
+    setTimeout(() => {
+      idx = (idx + 1) % loops.length;
+      trigger.textContent = loops[idx].trigger;
+      rule.textContent = loops[idx].rule;
+      trigger.classList.remove('is-changing');
+      rule.classList.remove('is-changing');
+    }, 260);
+    setTimeout(() => {
+      status.textContent = 'Pattern detected';
+      status.classList.remove('is-monitoring');
+      status.classList.add('is-detected');
+    }, 1050);
+  }
+  setInterval(rotateSignal, 3200);
+})();
+
+// Live founding-count badge.
+(function () {
+  var origin = (typeof window !== 'undefined' && window.PSYRULE_APP_ORIGIN) || '';
+  fetch(origin + '/api/billing/founding-count')
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (!data || !data.ok) return;
+      var counter = document.getElementById('founding-counter');
+      var heroText = document.getElementById('hero-founding-text');
+      var heroBox = document.getElementById('hero-founding');
+      if (data.remaining > 0) {
+        if (counter) counter.textContent = data.remaining + ' of ' + data.total + ' founding spots left';
+        if (heroText) heroText.innerHTML = '<strong>' + data.remaining + '</strong> of ' + data.total + ' founding spots left';
+      } else {
+        if (counter) { counter.textContent = 'Founding tier sold out — sign up at $29/mo'; counter.style.color = 'var(--ink3)'; }
+        if (heroBox) { heroBox.classList.add('sold-out'); }
+        if (heroText) { heroText.innerHTML = '<strong>Founding tier sold out</strong>'; }
+        var cta = document.getElementById('founding-cta');
+        if (cta) cta.style.display = 'none';
+      }
+    })
+    .catch(function () { /* keep static copy */ });
+})();
+
+/* =================================================================
+   TILT COST CALCULATOR
+   ================================================================= */
+(function () {
+  var loss = document.getElementById('bcalc-loss');
+  var blown = document.getElementById('bcalc-blown');
+  var pct = document.getElementById('bcalc-pct');
+  if (!loss || !blown || !pct) return;
+  var lossOut = document.getElementById('bcalc-loss-out');
+  var blownOut = document.getElementById('bcalc-blown-out');
+  var pctOut = document.getElementById('bcalc-pct-out');
+  var totalOut = document.getElementById('bcalc-total');
+  var savingsOut = document.getElementById('bcalc-savings');
+  var totalNum = document.querySelector('.bcalc-out-num');
+  var headlineNum = document.getElementById('bcalc-headline-num');
+
+  function fmt(n) { return Math.round(n).toLocaleString(); }
+  function pctOf(input) {
+    var min = +input.min, max = +input.max, v = +input.value;
+    return ((v - min) / (max - min)) * 100;
+  }
+  function refreshSliderFill(input) {
+    input.style.setProperty('--p', pctOf(input) + '%');
+  }
+  function recalc(bump) {
+    var L = +loss.value, B = +blown.value, P = +pct.value;
+    var total = L * B * (P / 100);
+    // Add a baseline slow-bleed estimate: small daily giveback at 12 sessions/mo × 12mo
+    var slowBleed = (P / 100) * 60 * 144; // ~$60 avg leak * 144 sessions, scaled by attribution %
+    var allIn = total + slowBleed;
+    var savings = allIn * 0.5; // industry-typical interrupt savings
+
+    lossOut.textContent = fmt(L);
+    blownOut.textContent = B;
+    pctOut.textContent = P;
+    totalOut.textContent = fmt(allIn);
+    savingsOut.textContent = '$' + fmt(savings);
+    if (headlineNum) headlineNum.textContent = '−$' + fmt(allIn) + '/yr';
+
+    refreshSliderFill(loss);
+    refreshSliderFill(blown);
+    refreshSliderFill(pct);
+
+    if (bump && totalNum) {
+      totalNum.classList.remove('bump');
+      void totalNum.offsetWidth;
+      totalNum.classList.add('bump');
+    }
+  }
+  loss.addEventListener('input', function(){ recalc(true); });
+  blown.addEventListener('input', function(){ recalc(true); });
+  pct.addEventListener('input', function(){ recalc(true); });
+  recalc(false);
+})();
+</script>
+</body>
+</html>
